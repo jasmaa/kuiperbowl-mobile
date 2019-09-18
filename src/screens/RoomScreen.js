@@ -3,8 +3,17 @@ import React from 'react';
 import { View } from 'react-native';
 import { Button, Text, Card } from 'react-native-elements';
 import ProgressBar from 'react-native-progress/Bar';
+import Kuiperbowl from '../networking/Kuiperbowl';
 
+/**
+ * Room screen
+ */
 export default class RoomScreen extends React.Component {
+
+    constructor(props){
+        super(props);
+        this.K = new Kuiperbowl("wss://kuiperbowl.com/game/test", ()=>console.log("callback"));
+    }
 
     render() {
         return (
@@ -22,6 +31,8 @@ export default class RoomScreen extends React.Component {
                         </Text>
                     </Card>
                 </View>
+
+                <Button title="test set name" onPress={()=>this.K.setName("george")} />
 
                 <Button title="Buzz" />
             </View>
