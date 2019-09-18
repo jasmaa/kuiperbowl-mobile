@@ -32,6 +32,8 @@ export default class Kuiperbowl {
             curr_question_content: null,
             scores: null,
             messages: null,
+
+            answer_heading: null,
         };
 
         this.roomDict = null;
@@ -104,21 +106,16 @@ export default class Kuiperbowl {
                 this.clientState.player_id = data.player_id;
                 this.clientState.player_name = data.player_name;
                 this.clientState.locked_out = false;
+                this.cacheData();
 
                 // Update name
                 this.ping();
-
-                // Cache data
-                this.cacheData();
             }
             else if (data.response_type == "send_answer") {
-                //$('#answer-header').html("Answer: " + data.answer);
-                console.log("Answer: " + data.answer);
+                this.clientState.answer_heading = "Answer: " + data.answer;
             }
             else if (data.response_type == "lock_out") {
                 this.clientState.locked_out = true;
-
-                // Cache data
                 this.cacheData();
             }
 
@@ -153,6 +150,9 @@ export default class Kuiperbowl {
         this.clientState.current_time = this.clientState.buzz_start_time;
     }
 
+    /**
+     * Update client locally
+     */
     update() {
         if (this.clientState.question == undefined) {
             return;
@@ -161,28 +161,14 @@ export default class Kuiperbowl {
         let time_passed = this.clientState.current_time - this.clientState.start_time;
         let duration = this.clientState.end_time - this.clientState.start_time;
 
-        // Update if game is going
-        //var buzz_progress = $('#buzz-progress');
-        //buzz_progress.css('width', Math.round(100 * (1.1 * buzz_passed_time / buzz_time)) + '%');
-        //var content_progress = $('#content-progress');
-        //content_progress.css('width', Math.round(100 * (1.05 * time_passed / duration)) + '%');
-        //var question_body = $('#question-space');
-        //question_body.html(curr_question_content);
-
         if (this.clientState.game_state == 'idle') {
 
             this.clientState.locked_out = false;
             this.cacheData();
 
-            //if ($('#answer-header').html() == "") {
-            //    get_answer();
-            //}
-
-            //var content_progress = $('#content-progress');
-            //content_progress.css('width', '0%');
-
-            //var question_space = $('#question-space');
-            //question_space.html(question);
+            if (this.clientState.answer_heading == null) {
+                this.getAnswer();
+            }
         }
 
         else if (this.clientState.game_state == 'playing') {
@@ -192,10 +178,6 @@ export default class Kuiperbowl {
                 Math.round(this.clientState.question.length * (time_passed / (duration - this.clientState.grace_time)))
             )
             this.clientState.current_time += 0.1;
-
-            //$('#content-progress').show();
-            //$('#buzz-progress').hide();
-            //$('#answer-header').html("");
         }
 
         else if (this.clientState.game_state == 'contest') {
@@ -204,9 +186,6 @@ export default class Kuiperbowl {
                 0,
                 Math.round(this.clientState.question.length * (time_passed / (duration - this.clientState.grace_time)))
             )
-
-            //$('#content-progress').hide();
-            //$('#buzz-progress').show();
 
             // auto answer if over buzz time
             if (this.clientState.buzz_passed_time >= this.clientState.buzz_time) {
@@ -303,12 +282,6 @@ export default class Kuiperbowl {
                 request_type: "buzz_init",
                 content: ""
             }));
-
-            /*
-            setTimeout(function () {
-                $('#request-content').focus();
-            }, 1);
-            */
         }
     }
 
