@@ -37,17 +37,20 @@ export default class Kuiperbowl {
         this.roomDict = null;
     }
 
+    /**
+     * Initialize client
+     */
     async init() {
-        
+
         // Get room lookup table
         this.roomDict = await CacheStore.get("room_dict");
         if (this.roomDict == null) {
             this.roomDict = {};
             CacheStore.set("room_dict", this.roomDict);
         }
-        
+
         // Get player info for room
-        if(this.url in this.roomDict) {
+        if (this.url in this.roomDict) {
             const playerData = this.roomDict[this.url];
             this.clientState.player_id = playerData['player_id'];
             this.clientState.player_name = playerData['player_name'];
@@ -57,7 +60,10 @@ export default class Kuiperbowl {
         this.createWS();
     }
 
-    cacheData(){
+    /**
+     * Cache player data for room
+     */
+    cacheData() {
         this.roomDict[this.url] = {
             player_id: this.clientState.player_id,
             player_name: this.clientState.player_name,
@@ -66,6 +72,9 @@ export default class Kuiperbowl {
         CacheStore.set("room_dict", this.roomDict);
     }
 
+    /**
+     * Create websocket
+     */
     createWS() {
         this.ws = new WebSocket(this.url);
 
@@ -129,7 +138,6 @@ export default class Kuiperbowl {
      */
     setup() {
         // set up user
-        //retrieve_userdata();
         if (this.clientState.player_id == undefined) {
             this.requestNewUser();
         }
@@ -144,6 +152,79 @@ export default class Kuiperbowl {
         // set up current time if newly joined
         this.clientState.current_time = this.clientState.buzz_start_time;
     }
+
+    update() {
+        if (this.clientState.question == undefined) {
+            return;
+        }
+
+        let time_passed = this.clientState.current_time - this.clientState.start_time;
+        let duration = this.clientState.end_time - this.clientState.start_time;
+
+        // Update if game is going
+        //var buzz_progress = $('#buzz-progress');
+        //buzz_progress.css('width', Math.round(100 * (1.1 * buzz_passed_time / buzz_time)) + '%');
+        //var content_progress = $('#content-progress');
+        //content_progress.css('width', Math.round(100 * (1.05 * time_passed / duration)) + '%');
+        //var question_body = $('#question-space');
+        //question_body.html(curr_question_content);
+
+        if (this.clientState.game_state == 'idle') {
+
+            this.clientState.locked_out = false;
+            this.cacheData();
+
+            //if ($('#answer-header').html() == "") {
+            //    get_answer();
+            //}
+
+            //var content_progress = $('#content-progress');
+            //content_progress.css('width', '0%');
+
+            //var question_space = $('#question-space');
+            //question_space.html(question);
+        }
+
+        else if (this.clientState.game_state == 'playing') {
+            this.clientState.buzz_passed_time = 0;
+            this.clientState.curr_question_content = this.clientState.question.substring(
+                0, 
+                Math.round(this.clientState.question.length * (time_passed / (duration - this.clientState.grace_time)))
+            )
+            this.clientState.current_time += 0.1;
+
+            //$('#content-progress').show();
+            //$('#buzz-progress').hide();
+            //$('#answer-header').html("");
+        }
+
+        else if (this.clientState.game_state == 'contest') {
+            this.clientState.time_passed = this.clientState.buzz_start_time - this.clientState.start_time;
+            this.clientState.curr_question_content = this.clientState.question.substring(
+                0,
+                Math.round(this.clientState.question.length * (time_passed / (duration - this.clientState.grace_time)))
+            )
+
+            //$('#content-progress').hide();
+            //$('#buzz-progress').show();
+
+            // auto answer if over buzz time
+            if (this.clientState.buzz_passed_time >= this.clientState.buzz_time) {
+                this.answer();
+            }
+            this.clientState.buzz_passed_time += 0.1;
+        }
+
+        // transition to idle if overtime while playing
+        if (this.clientState.game_state == 'playing' && this.clientState.current_time >= this.clientState.end_time) {
+            this.clientState.game_state = 'idle';
+            this.getAnswer();
+        }
+
+        // Update UI
+        this.updateCallback(this.clientState);
+    }
+
 
     /**
      * Ping server

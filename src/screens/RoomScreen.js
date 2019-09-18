@@ -12,8 +12,18 @@ export default class RoomScreen extends React.Component {
 
     constructor(props){
         super(props);
-        this.K = new Kuiperbowl("wss://kuiperbowl.com/game/test", ()=>console.log("callback"));
+        this.K = new Kuiperbowl("wss://kuiperbowl.com/game/test", (clientState)=>{
+            this.setState(clientState);
+        });
         this.K.init();
+
+        this.state = {};
+
+        this.clientTimer = setInterval(()=>this.K.update(), 100);
+    }
+
+    componentWillUnmount(){
+        clearInterval(this.clientTimer);
     }
 
     render() {
@@ -23,13 +33,8 @@ export default class RoomScreen extends React.Component {
                 <ProgressBar progress={0.8} width={null} height={10} />
 
                 <View style={{ flex: 1 }}>
-                    <Card title="Literature" titleStyle={{ textAlign: "left" }}>
-                        <Text>
-                            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec sed tristique est.
-                            Donec vitae magna quis purus varius congue. Praesent ornare mi ac lectus porttitor tempor.
-                            Sed quis justo tortor. Praesent lobortis lobortis magna, vitae venenatis eros imperdiet in.
-                            Proin luctus sodales nunc, at ornare leo blandit in. Pellentesque mattis pretium venenatis.
-                        </Text>
+                    <Card title={this.state.category} titleStyle={{ textAlign: "left" }}>
+                        <Text>{this.state.curr_question_content}</Text>
                     </Card>
                 </View>
 
