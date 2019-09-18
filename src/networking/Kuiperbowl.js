@@ -1,4 +1,6 @@
 
+import CacheStore from 'react-native-cache-store';
+
 /**
  * Kuiperbowl client
  */
@@ -6,7 +8,8 @@ export default class Kuiperbowl {
 
     constructor(url, updateCallback) {
 
-        this.ws = new WebSocket(url);
+        this.url = url;
+        this.updateCallback = updateCallback;
 
         this.clientState = {
             player_name: null,
@@ -31,9 +34,44 @@ export default class Kuiperbowl {
             messages: null,
         };
 
+        this.roomDict = null;
+    }
+
+    async init() {
+        
+        // Get room lookup table
+        this.roomDict = await CacheStore.get("room_dict");
+        if (this.roomDict == null) {
+            this.roomDict = {};
+            CacheStore.set("room_dict", this.roomDict);
+        }
+        
+        // Get player info for room
+        if(this.url in this.roomDict) {
+            const playerData = this.roomDict[this.url];
+            this.clientState.player_id = playerData['player_id'];
+            this.clientState.player_name = playerData['player_name'];
+            this.clientState.locked_out = playerData['locked_out'];
+        }
+
+        this.createWS();
+    }
+
+    cacheData(){
+        this.roomDict[this.url] = {
+            player_id: this.clientState.player_id,
+            player_name: this.clientState.player_name,
+            locked_out: this.clientState.locked_out,
+        }
+        CacheStore.set("room_dict", this.roomDict);
+    }
+
+    createWS() {
+        this.ws = new WebSocket(this.url);
+
         this.ws.onopen = () => {
             this.setup();
-            updateCallback(this.clientState);
+            this.updateCallback(this.clientState);
         }
 
         this.ws.onmessage = (e) => {
@@ -53,14 +91,16 @@ export default class Kuiperbowl {
                 this.clientState.messages = data.messages;
             }
             else if (data.response_type == "new_user") {
-                //setCookie('player_id', data.player_id);
-                //setCookie('player_name', data.player_name);
+
                 this.clientState.player_id = data.player_id;
                 this.clientState.player_name = data.player_name;
                 this.clientState.locked_out = false;
 
                 // Update name
                 this.ping();
+
+                // Cache data
+                this.cacheData();
             }
             else if (data.response_type == "send_answer") {
                 //$('#answer-header').html("Answer: " + data.answer);
@@ -68,19 +108,20 @@ export default class Kuiperbowl {
             }
             else if (data.response_type == "lock_out") {
                 this.clientState.locked_out = true;
-                //setCookie('locked_out', locked_out);
+
+                // Cache data
+                this.cacheData();
             }
 
             // Update UI
-            updateCallback(this.clientState);
+            this.updateCallback(this.clientState);
         }
 
         this.ws.onclose = () => {
 
-            updateCallback(this.clientState);
+            this.updateCallback(this.clientState);
         }
     }
-
 
 
     /**

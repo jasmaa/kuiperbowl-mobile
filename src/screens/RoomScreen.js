@@ -13,6 +13,7 @@ export default class RoomScreen extends React.Component {
     constructor(props){
         super(props);
         this.K = new Kuiperbowl("wss://kuiperbowl.com/game/test", ()=>console.log("callback"));
+        this.K.init();
     }
 
     render() {
