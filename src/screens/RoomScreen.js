@@ -15,7 +15,7 @@ export default class RoomScreen extends React.PureComponent {
 
     constructor(props) {
         super(props);
-        this.K = new Kuiperbowl("wss://kuiperbowl.com/game/test7", (clientState) => {
+        this.K = new Kuiperbowl("wss://kuiperbowl.com/game/test8", (clientState) => {
 
             let time_passed = clientState.current_time - clientState.start_time;
             let duration = clientState.end_time - clientState.start_time;

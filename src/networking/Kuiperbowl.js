@@ -176,7 +176,7 @@ export default class Kuiperbowl {
                 0, 
                 Math.round(this.clientState.question.length * (time_passed / (duration - this.clientState.grace_time)))
             )
-            this.clientState.current_time += 0.1;
+            this.clientState.current_time += 0.1; // Replace with time step
         }
 
         else if (this.clientState.game_state == 'contest') {
@@ -188,9 +188,9 @@ export default class Kuiperbowl {
 
             // auto answer if over buzz time
             if (this.clientState.buzz_passed_time >= this.clientState.buzz_time) {
-                this.answer();
+                this.answer("");
             }
-            this.clientState.buzz_passed_time += 0.1;
+            this.clientState.buzz_passed_time += 0.1; // Replace with time step
         }
 
         // transition to idle if overtime while playing
@@ -201,8 +201,6 @@ export default class Kuiperbowl {
 
         // Update UI
         this.updateCallback(this.clientState);
-
-        console.log(this.clientState.game_state);
     }
 
 
@@ -273,6 +271,7 @@ export default class Kuiperbowl {
             this.clientState.game_state = 'contest';
 
             // this.is_buzz_player = true;
+            // Maybe player snipe fixes this??
             
 
             this.ws.send(JSON.stringify({
