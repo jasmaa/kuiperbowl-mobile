@@ -1,11 +1,12 @@
 
 import React from 'react';
-import { View, FlatList, Alert } from 'react-native';
+import { View, Alert } from 'react-native';
 import { Button, Text, Card } from 'react-native-elements';
 import ProgressBar from 'react-native-progress/Bar';
-import HTML from 'react-native-render-html';
 import GestureRecognizer, { swipeDirections } from 'react-native-swipe-gestures';
+import Drawer from 'react-native-drawer';
 
+import Messages from '../components/Messages';
 import Kuiperbowl from '../networking/Kuiperbowl';
 
 /**
@@ -15,7 +16,7 @@ export default class RoomScreen extends React.PureComponent {
 
     constructor(props) {
         super(props);
-        this.K = new Kuiperbowl("wss://kuiperbowl.com/game/test8", (clientState) => {
+        this.K = new Kuiperbowl("wss://kuiperbowl.com/game/test9", (clientState) => {
 
             let time_passed = clientState.current_time - clientState.start_time;
             let duration = clientState.end_time - clientState.start_time;
@@ -32,7 +33,7 @@ export default class RoomScreen extends React.PureComponent {
         this.K.init();
 
         this.state = {};
-        this.updateTimer = setInterval(() => this.K.update(), 100);
+        this.updateTimer = setInterval(() => this.K.update(0.1), 100);
         this.pingTimer = setInterval(() => this.K.ping(), 5000);
 
         this.buzzProgress = 0;
@@ -44,12 +45,21 @@ export default class RoomScreen extends React.PureComponent {
         clearInterval(this.pingTimer);
     }
 
-    buzz = ()=>this.K.buzz();
+    buzz = () => this.K.buzz();
 
     onSwipe = (gestureName, gestureState) => {
         const { SWIPE_UP, SWIPE_DOWN, SWIPE_LEFT, SWIPE_RIGHT } = swipeDirections;
-        if (gestureName == SWIPE_UP) {
-            this.K.next();
+        switch (gestureName) {
+            case SWIPE_UP:
+                this.K.next();
+                break;
+            case SWIPE_RIGHT:
+                this._drawer.open();
+                break;
+            case SWIPE_LEFT:
+                this._drawer.close();
+                break;
+
         }
     }
 
@@ -79,22 +89,6 @@ export default class RoomScreen extends React.PureComponent {
         }
     }
 
-    renderMessages() {
-        let messageData = null;
-        if (this.state.messages) {
-            messageData = this.state.messages.slice(0, 5);
-        }
-
-        return (
-            <Card>
-                <FlatList
-                    data={messageData}
-                    renderItem={({ item }) => <HTML html={item[1]} />}
-                />
-            </Card>
-        );
-    }
-
     render() {
 
         const config = {
@@ -106,15 +100,35 @@ export default class RoomScreen extends React.PureComponent {
             <GestureRecognizer
                 onSwipe={this.onSwipe}
                 config={config}
-                style={{ flex: 1, flexDirection: "column", margin: "2%" }}
+                style={{ flex: 1 }}
             >
-                {this.renderProgressBar()}
-                {this.renderContent()}
-                <View style={{ flex: 1 }}></View>
-                {/*this.renderMessages()*/}
+                <Drawer
+                    ref={(ref) => this._drawer = ref}
+                    openDrawerOffset={0.2}
+                    type="overlay"
+                    tapToClose={true}
+                    styles={{
+                        drawer: { flex: 1, backgroundColor: "red" },
+                    }}
+                    tweenHandler={(ratio) => ({
+                        main: { opacity: (2 - ratio) / 2 }
+                    })}
+                    tweenDuration={100}
+                    content={
+                        <Text>hi there</Text>
+                    }
+                >
+                    <View style={{ flex: 1, flexDirection: "column", margin: "2%" }}>
+                        {this.renderProgressBar()}
+                        {this.renderContent()}
+                        <View style={{ flex: 1 }}></View>
+                        <Messages messages={this.state.messages} />
 
-                <Button title="Buzz" buttonStyle={{ margin: 20 }} onPress={this.buzz} />
-            </GestureRecognizer>
+                        <Button title="Buzz" buttonStyle={{ margin: 20 }} onPress={this.buzz} />
+                    </View>
+
+                </Drawer>
+            </GestureRecognizer >
         );
     }
 }

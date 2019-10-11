@@ -152,8 +152,9 @@ export default class Kuiperbowl {
 
     /**
      * Update client locally
+     * @param {number} dt - Time step as fraction of a second
      */
-    update() {
+    update(dt) {
         if (this.clientState.question == undefined) {
             return;
         }
@@ -176,7 +177,7 @@ export default class Kuiperbowl {
                 0, 
                 Math.round(this.clientState.question.length * (time_passed / (duration - this.clientState.grace_time)))
             )
-            this.clientState.current_time += 0.1; // Replace with time step
+            this.clientState.current_time += dt; // Replace with time step
         }
 
         else if (this.clientState.game_state == 'contest') {
@@ -190,7 +191,7 @@ export default class Kuiperbowl {
             if (this.clientState.buzz_passed_time >= this.clientState.buzz_time) {
                 this.answer("");
             }
-            this.clientState.buzz_passed_time += 0.1; // Replace with time step
+            this.clientState.buzz_passed_time += dt; // Replace with time step
         }
 
         // transition to idle if overtime while playing
