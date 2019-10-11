@@ -6,6 +6,8 @@ import {
 } from './src/screens'
 
 const App = () => {
+  // Disable warnings for now
+  console.disableYellowBox = true;
   return <RoomScreen />;
 };
 

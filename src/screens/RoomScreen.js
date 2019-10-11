@@ -1,20 +1,21 @@
 
 import React from 'react';
-import { View, FlatList } from 'react-native';
+import { View, FlatList, Alert } from 'react-native';
 import { Button, Text, Card } from 'react-native-elements';
 import ProgressBar from 'react-native-progress/Bar';
 import HTML from 'react-native-render-html';
+import GestureRecognizer, { swipeDirections } from 'react-native-swipe-gestures';
 
 import Kuiperbowl from '../networking/Kuiperbowl';
 
 /**
  * Room screen
  */
-export default class RoomScreen extends React.Component {
+export default class RoomScreen extends React.PureComponent {
 
     constructor(props) {
         super(props);
-        this.K = new Kuiperbowl("wss://kuiperbowl.com/game/test", (clientState) => {
+        this.K = new Kuiperbowl("wss://kuiperbowl.com/game/test7", (clientState) => {
 
             let time_passed = clientState.current_time - clientState.start_time;
             let duration = clientState.end_time - clientState.start_time;
@@ -31,14 +32,25 @@ export default class RoomScreen extends React.Component {
         this.K.init();
 
         this.state = {};
-        this.clientTimer = setInterval(() => this.K.update(), 100);
+        this.updateTimer = setInterval(() => this.K.update(), 100);
+        this.pingTimer = setInterval(() => this.K.ping(), 5000);
 
         this.buzzProgress = 0;
         this.contentProgress = 0;
     }
 
     componentWillUnmount() {
-        clearInterval(this.clientTimer);
+        clearInterval(this.updateTimer);
+        clearInterval(this.pingTimer);
+    }
+
+    buzz = ()=>this.K.buzz();
+
+    onSwipe = (gestureName, gestureState) => {
+        const { SWIPE_UP, SWIPE_DOWN, SWIPE_LEFT, SWIPE_RIGHT } = swipeDirections;
+        if (gestureName == SWIPE_UP) {
+            this.K.next();
+        }
     }
 
     renderProgressBar() {
@@ -68,10 +80,9 @@ export default class RoomScreen extends React.Component {
     }
 
     renderMessages() {
-
         let messageData = null;
-        if(this.state.messages){
-            messageData = this.state.messages.slice(0, 10);
+        if (this.state.messages) {
+            messageData = this.state.messages.slice(0, 5);
         }
 
         return (
@@ -85,18 +96,25 @@ export default class RoomScreen extends React.Component {
     }
 
     render() {
+
+        const config = {
+            velocityThreshold: 0.3,
+            directionalOffsetThreshold: 80
+        };
+
         return (
-            <View style={{ flex: 1, flexDirection: "column", margin: "2%" }}>
-
+            <GestureRecognizer
+                onSwipe={this.onSwipe}
+                config={config}
+                style={{ flex: 1, flexDirection: "column", margin: "2%" }}
+            >
                 {this.renderProgressBar()}
+                {this.renderContent()}
+                <View style={{ flex: 1 }}></View>
+                {/*this.renderMessages()*/}
 
-                <View style={{ flex: 1 }}>
-                    {this.renderContent()}
-                    {this.renderMessages()}
-                </View>
-
-                <Button title="Buzz" onPress={this.K.buzz()}/>
-            </View>
+                <Button title="Buzz" buttonStyle={{ margin: 20 }} onPress={this.buzz} />
+            </GestureRecognizer>
         );
     }
 }

@@ -162,7 +162,6 @@ export default class Kuiperbowl {
         let duration = this.clientState.end_time - this.clientState.start_time;
 
         if (this.clientState.game_state == 'idle') {
-
             this.clientState.locked_out = false;
             this.cacheData();
 
@@ -181,7 +180,7 @@ export default class Kuiperbowl {
         }
 
         else if (this.clientState.game_state == 'contest') {
-            this.clientState.time_passed = this.clientState.buzz_start_time - this.clientState.start_time;
+            time_passed = this.clientState.buzz_start_time - this.clientState.start_time;
             this.clientState.curr_question_content = this.clientState.question.substring(
                 0,
                 Math.round(this.clientState.question.length * (time_passed / (duration - this.clientState.grace_time)))
@@ -202,6 +201,8 @@ export default class Kuiperbowl {
 
         // Update UI
         this.updateCallback(this.clientState);
+
+        console.log(this.clientState.game_state);
     }
 
 
@@ -265,18 +266,15 @@ export default class Kuiperbowl {
      * Buzz
      */
     buzz() {
+
         if (!this.clientState.locked_out && this.clientState.game_state == 'playing') {
             this.clientState.current_action = 'buzz';
-
-            //$('#request-content').val('');
-            //$('#request-content').show();
             this.clientState.buzz_passed_time = 0;
-
-            //$('#next-btn').hide();
-            //$('#buzz-btn').hide();
-            //$('#chat-btn').hide();
-
             this.clientState.game_state = 'contest';
+
+            // this.is_buzz_player = true;
+            
+
             this.ws.send(JSON.stringify({
                 player_id: this.clientState.player_id,
                 request_type: "buzz_init",
