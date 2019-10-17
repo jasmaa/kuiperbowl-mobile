@@ -15,6 +15,7 @@ export default class Messages extends React.PureComponent {
     }
 
     render() {
+
         const messageData = this.props.messages ? this.props.messages.slice(0, 5) : [];
 
         return (

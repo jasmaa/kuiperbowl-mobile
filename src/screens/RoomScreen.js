@@ -1,12 +1,12 @@
 
 import React from 'react';
-import { View, Alert } from 'react-native';
+import { View, Keyboard } from 'react-native';
 import { Button, Text, Card } from 'react-native-elements';
 import ProgressBar from 'react-native-progress/Bar';
 import GestureRecognizer, { swipeDirections } from 'react-native-swipe-gestures';
 import Drawer from 'react-native-drawer';
 
-import Messages from '../components/Messages';
+import { Messages, ProfileConfig } from '../components/';
 import Kuiperbowl from '../networking/Kuiperbowl';
 
 /**
@@ -107,15 +107,16 @@ export default class RoomScreen extends React.PureComponent {
                     openDrawerOffset={0.2}
                     type="overlay"
                     tapToClose={true}
+                    onClose={Keyboard.dismiss}
                     styles={{
-                        drawer: { flex: 1, backgroundColor: "red" },
+                        drawer: { flex: 1, backgroundColor: "white" },
                     }}
                     tweenHandler={(ratio) => ({
                         main: { opacity: (2 - ratio) / 2 }
                     })}
                     tweenDuration={100}
                     content={
-                        <Text>hi there</Text>
+                        <ProfileConfig K={this.K} scores={this.state.scores} />
                     }
                 >
                     <View style={{ flex: 1, flexDirection: "column", margin: "2%" }}>

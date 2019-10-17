@@ -1,5 +1,5 @@
-import RoomScreen from './RoomScreen'
+import RoomScreen from './RoomScreen';
 
 export {
-    RoomScreen
+    RoomScreen,
 }
