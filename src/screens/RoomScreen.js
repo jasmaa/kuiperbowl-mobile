@@ -45,13 +45,15 @@ export default class RoomScreen extends React.PureComponent {
         clearInterval(this.pingTimer);
     }
 
-    buzz = () => this.K.buzz();
+    buzzHandler = () => this.K.buzz();
 
-    onSwipe = (gestureName, gestureState) => {
+    swipeHandler = (gestureName, gestureState) => {
         const { SWIPE_UP, SWIPE_DOWN, SWIPE_LEFT, SWIPE_RIGHT } = swipeDirections;
         switch (gestureName) {
             case SWIPE_UP:
-                this.K.next();
+                if(!this._drawer._open){
+                    this.K.next();
+                }
                 break;
             case SWIPE_RIGHT:
                 this._drawer.open();
@@ -98,7 +100,7 @@ export default class RoomScreen extends React.PureComponent {
 
         return (
             <GestureRecognizer
-                onSwipe={this.onSwipe}
+                onSwipe={this.swipeHandler}
                 config={config}
                 style={{ flex: 1 }}
             >
@@ -116,7 +118,13 @@ export default class RoomScreen extends React.PureComponent {
                     })}
                     tweenDuration={100}
                     content={
-                        <ProfileConfig K={this.K} scores={this.state.scores} />
+                        <ProfileConfig 
+                            K={this.K}
+                            handle={this.state.player_name}
+                            difficulty={this.state.difficulty}
+                            category={this.state.room_category}
+                            scores={this.state.scores}
+                        />
                     }
                 >
                     <View style={{ flex: 1, flexDirection: "column", margin: "2%" }}>
@@ -125,7 +133,7 @@ export default class RoomScreen extends React.PureComponent {
                         <View style={{ flex: 1 }}></View>
                         <Messages messages={this.state.messages} />
 
-                        <Button title="Buzz" buttonStyle={{ margin: 20 }} onPress={this.buzz} />
+                        <Button title="Buzz" buttonStyle={{ margin: 20 }} onPress={this.buzzHandler} />
                     </View>
 
                 </Drawer>

@@ -29,6 +29,7 @@ export default class Kuiperbowl {
 
             question: null,
             category: null,
+            difficulty: null,
             curr_question_content: null,
             scores: null,
             messages: null,
@@ -98,6 +99,8 @@ export default class Kuiperbowl {
                 this.clientState.buzz_start_time = data.buzz_start_time;
                 this.clientState.question = data.current_question_content;
                 this.clientState.category = data.category;
+                this.clientState.room_category = data.room_category;
+                this.clientState.difficulty = data.difficulty;
                 this.clientState.scores = data.scores;
                 this.clientState.messages = data.messages;
             }
@@ -124,7 +127,6 @@ export default class Kuiperbowl {
         }
 
         this.ws.onclose = () => {
-
             this.updateCallback(this.clientState);
         }
     }
@@ -259,6 +261,9 @@ export default class Kuiperbowl {
             request_type: "set_name",
             content: name
         }));
+
+        this.clientState.player_name = name;
+        this.cacheData();
     }
 
     /**
@@ -395,7 +400,7 @@ export default class Kuiperbowl {
      * @param {string} difficulty 
      */
     setDifficulty(difficulty) {
-        gamesock.send(JSON.stringify({
+        this.ws.send(JSON.stringify({
             request_type: "set_difficulty",
             content: difficulty
         }));
@@ -405,7 +410,7 @@ export default class Kuiperbowl {
      * Reset score
      */
     resetScore() {
-        gamesock.send(JSON.stringify({
+        this.ws.send(JSON.stringify({
             player_id: this.clientState.player_id,
             request_type: "reset_score",
         }));

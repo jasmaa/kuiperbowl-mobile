@@ -1,6 +1,6 @@
 import React from 'react';
-import { View, FlatList, Picker } from 'react-native';
-import { Input, Text, ListItem, Button, Divider } from 'react-native-elements';
+import { FlatList, Picker, Alert, ScrollView } from 'react-native';
+import { Input, Text, ListItem, Button, Card } from 'react-native-elements';
 
 /**
  * Room screen
@@ -11,46 +11,80 @@ export default class ProfileConfig extends React.PureComponent {
         super(props);
     }
 
-    changeName = (text) => this.props.K.setName(text);
+    changeNameHandler = (text) => this.props.K.setName(text);
+    changeDifficultyHandler = (itemValue, _) => this.props.K.setDifficulty(itemValue);
+    changeCategoryHandler = (itemValue, _) => this.props.K.setCategory(itemValue);
+    resetScoreHandler = () => {
+        Alert.alert(
+            'Reset Score',
+            'Are you sure you want to reset?',
+            [
+                { text: 'No' },
+                { text: 'Yes', onPress: () => this.props.K.resetScore() },
+            ],
+        );
+    };
 
     render() {
 
         return (
-            <View style={{ flex: 1, flexDirection: 'column', margin: '2%' }}>
-                <Text h4>{this.props.K.url}</Text>
-                <Divider />
+            <ScrollView style={{ flex: 1, flexDirection: 'column', margin: '2%' }}>
 
-                <Input
-                    label="Handle"
-                    onChangeText={this.changeName}
-                />
+                <Card>
+                    <Text h5>{this.props.K.url}</Text>
+                </Card>
 
-                <Picker
-                    onValueChange={(itemValue, itemIndex) => console.log(itemValue)}>
-                    <Picker.Item label="Everything" value="java" />
-                    <Picker.Item label="Science" value="js" />
-                </Picker>
-                <Picker
-                    onValueChange={(itemValue, itemIndex) => console.log(itemValue)}>
-                    <Picker.Item label="HS" value="java" />
-                    <Picker.Item label="MS" value="js" />
-                    <Picker.Item label="College" value="js" />
-                </Picker>
+                <Card>
+                    <Picker
+                        selectedValue={this.props.category}
+                        onValueChange={this.changeCategoryHandler}
+                    >
+                        <Picker.Item label="Everything" value="Everything" />
+                        <Picker.Item label="Science" value="Science" />
+                        <Picker.Item label="History" value="History" />
+                        <Picker.Item label="Literature" value="Literature" />
+                        <Picker.Item label="Philosophy" value="Philosophy" />
+                        <Picker.Item label="Religion" value="Religion" />
+                        <Picker.Item label="Geography" value="Geography" />
+                        <Picker.Item label="Fine Arts" value="Fine Arts" />
+                        <Picker.Item label="Social Studies" value="Social Studies" />
+                        <Picker.Item label="Mythology" value="Mythology" />
+                        <Picker.Item label="Trash" value="Trash" />
+                    </Picker>
+                    <Picker
+                        selectedValue={this.props.difficulty}
+                        onValueChange={this.changeDifficultyHandler}
+                    >
+                        <Picker.Item label="HS" value="HS" />
+                        <Picker.Item label="MS" value="MS" />
+                        <Picker.Item label="College" value="College" />
+                    </Picker>
+                </Card>
 
-                <Text h4>Scores</Text>
-                <FlatList
-                    data={this.props.scores}
-                    renderItem={({ item }) =>
-                        <ListItem
-                            title={"" + item[0]}
-                            rightTitle={"" + item[1]}
-                            bottomDivider
-                        />
-                    }
-                />
+                <Card>
+                    <Input
+                        label="Handle"
+                        value={this.props.handle}
+                        onChangeText={this.changeNameHandler}
+                    />
 
-                <Button title="Leave Room" buttonStyle={{ margin: 20 }} />
-            </View>
+                    <FlatList
+                        data={this.props.scores}
+                        renderItem={({ item }) =>
+                            <ListItem
+                                title={"" + item[0]}
+                                rightTitle={"" + item[1]}
+                                bottomDivider
+                            />
+                        }
+                    />
+                </Card>
+
+                <Card>
+                    <Button title="Reset Score" buttonStyle={{ margin: 10 }} onPress={this.resetScoreHandler} />
+                    <Button title="Leave Room" buttonStyle={{ margin: 10 }} />
+                </Card>
+            </ScrollView>
         );
     }
 }
