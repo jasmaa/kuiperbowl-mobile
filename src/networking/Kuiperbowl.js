@@ -11,6 +11,8 @@ export default class Kuiperbowl {
         this.url = url;
         this.updateCallback = updateCallback;
 
+        this.autoAnswer = "";
+
         this.clientState = {
             player_name: null,
             player_id: null,
@@ -26,6 +28,8 @@ export default class Kuiperbowl {
             buzz_passed_time: 0,
             grace_time: 3,
             buzz_time: 8,
+            contentProgress: 0,
+            buzzProgress: 0,
 
             question: null,
             category: null,
@@ -83,6 +87,7 @@ export default class Kuiperbowl {
 
         this.ws.onopen = () => {
             this.setup();
+
             this.updateCallback(this.clientState);
         }
 
@@ -127,7 +132,7 @@ export default class Kuiperbowl {
         }
 
         this.ws.onclose = () => {
-            this.updateCallback(this.clientState);
+            
         }
     }
 
@@ -176,7 +181,7 @@ export default class Kuiperbowl {
         else if (this.clientState.game_state == 'playing') {
             this.clientState.buzz_passed_time = 0;
             this.clientState.curr_question_content = this.clientState.question.substring(
-                0, 
+                0,
                 Math.round(this.clientState.question.length * (time_passed / (duration - this.clientState.grace_time)))
             )
             this.clientState.current_time += dt; // Replace with time step
@@ -191,7 +196,7 @@ export default class Kuiperbowl {
 
             // auto answer if over buzz time
             if (this.clientState.buzz_passed_time >= this.clientState.buzz_time) {
-                this.answer("");
+                this.answer(this.autoAnswer);
             }
             this.clientState.buzz_passed_time += dt; // Replace with time step
         }
@@ -199,13 +204,20 @@ export default class Kuiperbowl {
         // transition to idle if overtime while playing
         if (this.clientState.game_state == 'playing' && this.clientState.current_time >= this.clientState.end_time) {
             this.clientState.game_state = 'idle';
+            this.autoAnswer = "";
             this.getAnswer();
         }
 
-        // Update UI
+        // Update progress
+        this.clientState.buzzProgress = 1.1 * this.clientState.buzz_passed_time / this.clientState.buzz_time;
+        this.clientState.contentProgress = 1.05 * time_passed / duration;
+
+        if (this.clientState.game_state == 'idle') {
+            this.clientState.contentProgress = 0;
+        }
+
         this.updateCallback(this.clientState);
     }
-
 
     /**
      * Ping server
@@ -278,14 +290,18 @@ export default class Kuiperbowl {
 
             // this.is_buzz_player = true;
             // Maybe player snipe fixes this??
-            
+
 
             this.ws.send(JSON.stringify({
                 player_id: this.clientState.player_id,
                 request_type: "buzz_init",
                 content: ""
             }));
+
+            return true;
         }
+
+        return false;
     }
 
     /**
