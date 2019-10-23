@@ -65,6 +65,8 @@ export default class Kuiperbowl {
             this.clientState.locked_out = playerData['locked_out'];
         }
 
+        // Fetch page to init room
+        await fetch(`https://kuiperbowl.com/game/${this.roomName}`);
         this.createWS();
     }
 
@@ -86,10 +88,8 @@ export default class Kuiperbowl {
     createWS() {
         this.ws = new WebSocket(this.url);
 
-        this.ws.onopen = () => {
+        this.ws.onopen = (e) => {
             this.setup();
-
-            this.updateCallback(this.clientState);
         }
 
         this.ws.onmessage = (e) => {
@@ -131,12 +131,7 @@ export default class Kuiperbowl {
             // Update UI
             this.updateCallback(this.clientState);
         }
-
-        this.ws.onclose = () => {
-            
-        }
     }
-
 
     /**
      * Set up client

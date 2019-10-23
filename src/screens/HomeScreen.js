@@ -1,6 +1,6 @@
 import React from 'react';
-import { View } from 'react-native';
-import { Button, Text, Input } from 'react-native-elements';
+import { View, ImageBackground } from 'react-native';
+import { Button, Text, Input, Card } from 'react-native-elements';
 
 import { styles } from '../styles';
 
@@ -12,25 +12,46 @@ export default class HomeScreen extends React.PureComponent {
     constructor(props) {
         super(props);
 
-        this.roomName = "";
-        this.state = {};
+        this.state = {
+            roomName: "",
+            inputError: "",
+        };
     }
 
-    changeTextHandler = (value) => this.roomName = value;
+    changeTextHandler = (value) => this.setState({ roomName: value });
     joinRoomHandler = () => {
-        this.props.navigation.navigate('Room', { roomName: this.roomName });
+        const namePattern = /^[a-z0-9_-]+$/
+        if (this.state.roomName.search(namePattern) == 0) {
+            this.setState({ inputError: "" });
+            this.props.navigation.navigate('Room', { roomName: this.state.roomName });
+        }
+        else {
+            this._roomInput.shake();
+            this.setState({ inputError: "Invalid room name" });
+        }
     }
 
     render() {
         return (
-            <View style={styles.homeContainer}>
-                <Text h1 style={{textAlign: "center"}}>Welcome to Kuiperbowl</Text>
+            <ImageBackground source={require("../images/testBG.jpg")} style={{ width: '100%', height: '100%' }}>
+                <View style={styles.homeContainer}>
 
-                <View>
-                    <Input label="Room" onChangeText={this.changeTextHandler} />
-                    <Button title="Go!" buttonStyle={{ margin: 10 }} onPress={this.joinRoomHandler} />
+                    <Text h1 style={{ textAlign: "center", color: 'white' }}>Welcome to Kuiperbowl</Text>
+
+
+                    <View>
+                        <Card>
+                            <Input
+                                label="Room"
+                                ref={component => this._roomInput = component}
+                                onChangeText={this.changeTextHandler}
+                                errorMessage={this.state.inputError}
+                            />
+                        </Card>
+                        <Button title="Go!" buttonStyle={{ margin: 10 }} onPress={this.joinRoomHandler} />
+                    </View>
                 </View>
-            </View>
+            </ImageBackground>
         );
     }
 

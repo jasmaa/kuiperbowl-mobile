@@ -2,6 +2,8 @@
 
 WIP Kuiperbowl mobile client
 
+![Kuiperbowl mobile](./media/screenshot_01.png)
+
 ## Setup and Run
   - Setup with: `./scripts/setup.sh`
   - Run on Android
