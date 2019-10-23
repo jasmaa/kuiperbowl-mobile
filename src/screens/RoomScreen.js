@@ -8,6 +8,7 @@ import Drawer from 'react-native-drawer';
 
 import { Messages, ProfileConfig } from '../components/';
 import Kuiperbowl from '../networking/Kuiperbowl';
+import { styles, BootstrapColors } from '../styles';
 
 /**
  * Room screen
@@ -17,7 +18,7 @@ export default class RoomScreen extends React.PureComponent {
     constructor(props) {
         super(props);
 
-        this.K = new Kuiperbowl("wss://kuiperbowl.com/game/test9", (clientState) => {
+        this.K = new Kuiperbowl(this.props.navigation.getParam("roomName", "hs"), (clientState) => {
             this.setState(clientState);
         });
         this.K.init();
@@ -57,12 +58,24 @@ export default class RoomScreen extends React.PureComponent {
         }
     }
 
+    leaveRoomHandler = () => {
+        this.props.navigation.goBack();
+    }
+
     renderProgressBar() {
         if (this.state.game_state == 'contest') {
-            return <ProgressBar progress={this.state.buzzProgress} width={null} height={10} color="#d9534f" />
+            return <ProgressBar
+                        progress={this.state.buzzProgress}
+                        width={null} height={10}
+                        color={BootstrapColors.DANGER}
+                    />
         }
         else {
-            return <ProgressBar progress={this.state.contentProgress} width={null} height={10} color="#5cb85c" />
+            return <ProgressBar
+                        progress={this.state.contentProgress}
+                        width={null} height={10}
+                        color={BootstrapColors.SUCCESS}
+            />
         }
     }
 
@@ -116,10 +129,11 @@ export default class RoomScreen extends React.PureComponent {
                             difficulty={this.state.difficulty}
                             category={this.state.room_category}
                             scores={this.state.scores}
+                            leaveRoomHandler={this.leaveRoomHandler}
                         />
                     }
                 >
-                    <View style={{ flex: 1, flexDirection: "column", margin: "2%" }}>
+                    <View style={styles.container}>
                         {this.renderProgressBar()}
                         {this.renderContent()}
                         <View style={{ flex: 1 }}></View>

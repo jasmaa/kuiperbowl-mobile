@@ -6,9 +6,10 @@ import CacheStore from 'react-native-cache-store';
  */
 export default class Kuiperbowl {
 
-    constructor(url, updateCallback) {
+    constructor(roomName, updateCallback) {
 
-        this.url = url;
+        this.roomName = roomName;
+        this.url = `wss://kuiperbowl.com/game/${this.roomName}`;
         this.updateCallback = updateCallback;
 
         this.autoAnswer = "";

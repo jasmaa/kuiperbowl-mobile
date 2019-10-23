@@ -1,8 +1,10 @@
 
 import React from 'react';
-import { View, Keyboard } from 'react-native';
-import { Button, Text, Card, Input } from 'react-native-elements';
+import { View } from 'react-native';
+import { Text, Card, Input } from 'react-native-elements';
 import ProgressBar from 'react-native-progress/Bar';
+
+import { styles, BootstrapColors } from '../styles';
 
 export default class AnswerScreen extends React.PureComponent {
 
@@ -36,17 +38,26 @@ export default class AnswerScreen extends React.PureComponent {
 
     renderProgressBar() {
         if (this.state.game_state == 'contest') {
-            return <ProgressBar progress={this.state.buzzProgress} width={null} height={10} color="#d9534f" />
+            return <ProgressBar
+                        progress={this.state.buzzProgress}
+                        width={null} height={10}
+                        color={BootstrapColors.DANGER}
+                    />
         }
         else {
-            return <ProgressBar progress={this.state.contentProgress} width={null} height={10} color="#5cb85c" />
+            return <ProgressBar
+                        progress={this.state.contentProgress}
+                        width={null}
+                        height={10}
+                        color={BootstrapColors.SUCCESS}
+                    />
         }
     }
 
     render() {
 
         return (
-            <View style={{ flex: 1, flexDirection: "column", margin: "2%" }}>
+            <View style={styles.container}>
                 {this.renderProgressBar()}
                 <Input
                     label="Answer"

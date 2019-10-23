@@ -2,6 +2,8 @@ import React from 'react';
 import { FlatList, Picker, Alert, ScrollView } from 'react-native';
 import { Input, Text, ListItem, Button, Card } from 'react-native-elements';
 
+import { styles } from '../styles';
+
 /**
  * Room screen
  */
@@ -28,10 +30,10 @@ export default class ProfileConfig extends React.PureComponent {
     render() {
 
         return (
-            <ScrollView style={{ flex: 1, flexDirection: 'column', margin: '2%' }}>
+            <ScrollView style={styles.container}>
 
                 <Card>
-                    <Text h5>{this.props.K.url}</Text>
+                    <Text h4 style={{textAlign: "center"}}>{this.props.K.roomName}</Text>
                 </Card>
 
                 <Card>
@@ -82,7 +84,7 @@ export default class ProfileConfig extends React.PureComponent {
 
                 <Card>
                     <Button title="Reset Score" buttonStyle={{ margin: 10 }} onPress={this.resetScoreHandler} />
-                    <Button title="Leave Room" buttonStyle={{ margin: 10 }} />
+                    <Button title="Leave Room" buttonStyle={{ margin: 10 }} onPress={this.props.leaveRoomHandler} />
                 </Card>
             </ScrollView>
         );
