@@ -2,7 +2,7 @@ import React from 'react';
 import { FlatList, Picker, Alert, ScrollView } from 'react-native';
 import { Input, Text, ListItem, Button, Card } from 'react-native-elements';
 
-import { styles } from '../styles';
+import { styles, BootstrapColors } from '../styles';
 
 /**
  * Room screen
@@ -11,9 +11,16 @@ export default class ProfileConfig extends React.PureComponent {
 
     constructor(props) {
         super(props);
+
+        this.state = {
+            handle: this.props.handle
+        }
     }
 
-    changeNameHandler = (text) => this.props.K.setName(text);
+    changeNameHandler = (text) => {
+        this.props.K.setName(text);
+        this.setState({ handle: text });
+    }
     changeDifficultyHandler = (itemValue, _) => this.props.K.setDifficulty(itemValue);
     changeCategoryHandler = (itemValue, _) => this.props.K.setCategory(itemValue);
     resetScoreHandler = () => {
@@ -28,6 +35,10 @@ export default class ProfileConfig extends React.PureComponent {
     };
 
     render() {
+
+        if(this.state.handle == null){
+            this.setState({ handle: this.props.handle });
+        }
 
         return (
             <ScrollView style={styles.container}>
@@ -66,7 +77,7 @@ export default class ProfileConfig extends React.PureComponent {
                 <Card>
                     <Input
                         label="Handle"
-                        value={this.props.handle}
+                        value={this.state.handle}
                         onChangeText={this.changeNameHandler}
                     />
 
@@ -83,8 +94,16 @@ export default class ProfileConfig extends React.PureComponent {
                 </Card>
 
                 <Card>
-                    <Button title="Reset Score" buttonStyle={{ margin: 10 }} onPress={this.resetScoreHandler} />
-                    <Button title="Leave Room" buttonStyle={{ margin: 10 }} onPress={this.props.leaveRoomHandler} />
+                    <Button
+                        title="Reset Score"
+                        buttonStyle={{ margin: 10, backgroundColor: BootstrapColors.SECONDARY }}
+                        onPress={this.resetScoreHandler}
+                    />
+                    <Button
+                        title="Leave Room"
+                        buttonStyle={{ margin: 10, backgroundColor: BootstrapColors.DANGER }}
+                        onPress={this.props.leaveRoomHandler}
+                    />
                 </Card>
             </ScrollView>
         );

@@ -44,6 +44,7 @@ export default class HomeScreen extends React.PureComponent {
                             <Input
                                 label="Room"
                                 ref={component => this._roomInput = component}
+                                value={this.state.roomName}
                                 onChangeText={this.changeTextHandler}
                                 errorMessage={this.state.inputError}
                             />

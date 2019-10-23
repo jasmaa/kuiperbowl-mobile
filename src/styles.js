@@ -17,5 +17,8 @@ export const styles = StyleSheet.create({
 
 export const BootstrapColors = {
     DANGER: "#d9534f",
+    SECONDARY: "#868e96",
+    INFO: "#5bc0de",
     SUCCESS: "#5cb85c",
+    PRIMARY: "#428bca",
 }
