@@ -24,13 +24,10 @@ export default class RoomScreen extends React.PureComponent {
         this.K.init();
 
         this.state = {};
-        this.updateTimer = setInterval(() => this.K.update(0.1), 100);
-        this.pingTimer = setInterval(() => this.K.ping(), 5000);
     }
 
     componentWillUnmount() {
-        clearInterval(this.updateTimer);
-        clearInterval(this.pingTimer);
+        this.K.deinit();
     }
 
     buzzHandler = () => {

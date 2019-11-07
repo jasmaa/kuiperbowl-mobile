@@ -9,7 +9,7 @@ export default class Kuiperbowl {
     constructor(roomName, updateCallback) {
 
         this.roomName = roomName;
-        this.url = `wss://kuiperbowl.com/game/${this.roomName}`;
+        this.url = `wss://kuiperbowl.com/ws/game/${this.roomName}/`;
         this.updateCallback = updateCallback;
 
         this.autoAnswer = "";
@@ -71,6 +71,14 @@ export default class Kuiperbowl {
     }
 
     /**
+     * Clean up
+     */
+    deinit(){
+        clearInterval(this.updateTimer);
+        clearInterval(this.pingTimer);
+    }
+
+    /**
      * Cache player data for room
      */
     cacheData() {
@@ -90,6 +98,8 @@ export default class Kuiperbowl {
 
         this.ws.onopen = (e) => {
             this.setup();
+            this.updateTimer = setInterval(() => this.update(0.1), 100);
+            this.pingTimer = setInterval(() => this.ping(), 5000);
         }
 
         this.ws.onmessage = (e) => {
@@ -146,9 +156,6 @@ export default class Kuiperbowl {
             this.join();
         }
 
-        //$('#name').val(player_name);
-        //$('#request-content').hide();
-
         // set up current time if newly joined
         this.clientState.current_time = this.clientState.buzz_start_time;
     }
@@ -158,6 +165,7 @@ export default class Kuiperbowl {
      * @param {number} dt - Time step as fraction of a second
      */
     update(dt) {
+
         if (this.clientState.question == undefined) {
             return;
         }

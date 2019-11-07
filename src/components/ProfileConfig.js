@@ -36,6 +36,7 @@ export default class ProfileConfig extends React.PureComponent {
 
     render() {
 
+        // Update handle when value received
         if(this.state.handle == null){
             this.setState({ handle: this.props.handle });
         }

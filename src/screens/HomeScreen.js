@@ -33,7 +33,7 @@ export default class HomeScreen extends React.PureComponent {
 
     render() {
         return (
-            <ImageBackground source={require("../images/testBG.jpg")} style={{ width: '100%', height: '100%' }}>
+            <ImageBackground source={require("../images/kuiperbowlAppBG.png")} style={{ width: '100%', height: '100%' }}>
                 <View style={styles.homeContainer}>
 
                     <Text h1 style={{ textAlign: "center", color: 'white' }}>Welcome to Kuiperbowl</Text>
