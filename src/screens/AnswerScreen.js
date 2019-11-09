@@ -4,7 +4,7 @@ import { View } from 'react-native';
 import { Text, Card, Input } from 'react-native-elements';
 import ProgressBar from 'react-native-progress/Bar';
 
-import { styles, BootstrapColors } from '../styles';
+import { styles, BootstrapColors, modeStyles } from '../styles';
 
 export default class AnswerScreen extends React.PureComponent {
 
@@ -39,35 +39,47 @@ export default class AnswerScreen extends React.PureComponent {
     renderProgressBar() {
         if (this.state.game_state == 'contest') {
             return <ProgressBar
-                        progress={this.state.buzzProgress}
-                        width={null} height={10}
-                        color={BootstrapColors.DANGER}
-                    />
+                progress={this.state.buzzProgress}
+                width={null} height={10}
+                color={BootstrapColors.DANGER}
+            />
         }
         else {
             return <ProgressBar
-                        progress={this.state.contentProgress}
-                        width={null}
-                        height={10}
-                        color={BootstrapColors.SUCCESS}
-                    />
+                progress={this.state.contentProgress}
+                width={null}
+                height={10}
+                color={BootstrapColors.SUCCESS}
+            />
         }
     }
 
     render() {
 
+        const colorMode = this.props.navigation.getParam("colorMode", "light")
+
         return (
-            <View style={styles.container}>
-                {this.renderProgressBar()}
-                <Input
-                    label="Answer"
-                    autoFocus={true}
-                    onChangeText={this.changeTextHandler}
-                    onSubmitEditing={this.submitHandler}
-                />
-                <Card>
-                    <Text>{this.K.clientState.curr_question_content}</Text>
-                </Card>
+            <View style={modeStyles[colorMode].body}>
+                <View style={styles.container}>
+                    <ProgressBar
+                        progress={this.state.buzzProgress}
+                        width={null} height={10}
+                        color={BootstrapColors.DANGER}
+                    />
+                    <Input
+                        label="Answer"
+                        autoFocus={true}
+                        onChangeText={this.changeTextHandler}
+                        onSubmitEditing={this.submitHandler}
+                        labelStyle={modeStyles[colorMode].cardText}
+                        inputStyle={modeStyles[colorMode].cardText}
+                    />
+                    <Card containerStyle={modeStyles[colorMode].card}>
+                        <Text style={modeStyles[colorMode].cardText}>
+                            {this.K.clientState.curr_question_content}
+                        </Text>
+                    </Card>
+                </View>
             </View>
         );
     }

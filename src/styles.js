@@ -1,6 +1,31 @@
 
 import { StyleSheet } from 'react-native'
 
+const light = StyleSheet.create({
+    body: {
+        flex: 1,
+    },
+    card: {},
+    cardText: {},
+});
+const dark = StyleSheet.create({
+    body: {
+        flex: 1,
+        backgroundColor: "#212121",
+    },
+    card: {
+        backgroundColor: "#303030",
+        borderColor: "#424242",
+    },
+    cardText: {
+        color: 'white',
+    },
+});
+export const modeStyles = {
+    "light": light,
+    "dark": dark,
+}
+
 export const styles = StyleSheet.create({
     container: {
         flex: 1,

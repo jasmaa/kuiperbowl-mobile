@@ -3,6 +3,8 @@ import { FlatList } from 'react-native';
 import { Card } from 'react-native-elements';
 import HTML from 'react-native-render-html';
 
+import { modeStyles } from '../styles';
+
 /**
  * Game room message display
  */
@@ -19,10 +21,10 @@ export default class Messages extends React.PureComponent {
         const messageData = this.props.messages ? this.props.messages.slice(0, 5) : [];
 
         return (
-            <Card>
+            <Card containerStyle={modeStyles[this.props.colorMode].card}>
                 <FlatList
                     data={messageData}
-                    renderItem={({ item }) => <HTML html={item[1]} />}
+                    renderItem={({ item }) => <HTML html={item[1]} baseFontStyle={modeStyles[this.props.colorMode].cardText} />}
                 />
             </Card>
         );

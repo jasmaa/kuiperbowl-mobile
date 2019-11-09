@@ -8,7 +8,7 @@ import Drawer from 'react-native-drawer';
 
 import { Messages, ProfileConfig } from '../components/';
 import Kuiperbowl from '../networking/Kuiperbowl';
-import { styles, BootstrapColors } from '../styles';
+import { styles, BootstrapColors, modeStyles } from '../styles';
 
 /**
  * Room screen
@@ -23,6 +23,8 @@ export default class RoomScreen extends React.PureComponent {
         });
         this.K.init();
 
+        this.colorMode = 'dark';
+
         this.state = {};
     }
 
@@ -32,8 +34,8 @@ export default class RoomScreen extends React.PureComponent {
 
     buzzHandler = () => {
         // Do buzz ownership checking here instead
-        if(this.K.buzz()){
-            this.props.navigation.navigate('Answer', {K: this.K});
+        if (this.K.buzz()) {
+            this.props.navigation.navigate('Answer', { K: this.K, colorMode: this.colorMode });
         }
     }
 
@@ -41,7 +43,7 @@ export default class RoomScreen extends React.PureComponent {
         const { SWIPE_UP, SWIPE_DOWN, SWIPE_LEFT, SWIPE_RIGHT } = swipeDirections;
         switch (gestureName) {
             case SWIPE_UP:
-                if(!this._drawer._open){
+                if (!this._drawer._open) {
                     this.K.next();
                 }
                 break;
@@ -59,42 +61,9 @@ export default class RoomScreen extends React.PureComponent {
         this.props.navigation.goBack();
     }
 
-    renderProgressBar() {
-        if (this.state.game_state == 'contest') {
-            return <ProgressBar
-                        progress={this.state.buzzProgress}
-                        width={null} height={10}
-                        color={BootstrapColors.DANGER}
-                    />
-        }
-        else {
-            return <ProgressBar
-                        progress={this.state.contentProgress}
-                        width={null} height={10}
-                        color={BootstrapColors.SUCCESS}
-            />
-        }
-    }
-
-    renderContent() {
-        if (this.state.game_state == 'idle') {
-            return (
-                <Card title={this.state.category + "\n" + this.state.answer_heading} titleStyle={{ textAlign: "left" }}>
-                    <Text>{this.state.question}</Text>
-                </Card>
-            );
-        }
-        else {
-            return (
-                <Card title={this.state.category} titleStyle={{ textAlign: "left" }}>
-                    <Text>{this.state.curr_question_content}</Text>
-                </Card>
-            );
-        }
-    }
-
     render() {
-
+        const isContest = this.state.game_state == 'contest';
+        const isIdle = this.state.game_state == 'idle';
         const config = {
             velocityThreshold: 0.3,
             directionalOffsetThreshold: 80
@@ -104,7 +73,7 @@ export default class RoomScreen extends React.PureComponent {
             <GestureRecognizer
                 onSwipe={this.swipeHandler}
                 config={config}
-                style={{ flex: 1 }}
+                style={modeStyles[this.colorMode].body}
             >
                 <Drawer
                     ref={(ref) => this._drawer = ref}
@@ -120,21 +89,36 @@ export default class RoomScreen extends React.PureComponent {
                     })}
                     tweenDuration={100}
                     content={
-                        <ProfileConfig 
+                        <ProfileConfig
                             K={this.K}
                             handle={this.state.player_name}
                             difficulty={this.state.difficulty}
                             category={this.state.room_category}
                             scores={this.state.scores}
                             leaveRoomHandler={this.leaveRoomHandler}
+                            colorMode={this.colorMode}
                         />
                     }
                 >
                     <View style={styles.container}>
-                        {this.renderProgressBar()}
-                        {this.renderContent()}
+                        <ProgressBar
+                            progress={isContest ? this.state.buzzProgress : this.state.contentProgress}
+                            width={null} height={10}
+                            color={isContest ? BootstrapColors.DANGER : BootstrapColors.SUCCESS}
+                        />
+
+                        <Card
+                            title={isIdle ? this.state.category + "\n" + this.state.answer_heading : this.state.category}
+                            titleStyle={{...modeStyles[this.colorMode].cardText, textAlign: "left"}}
+                            containerStyle={modeStyles[this.colorMode].card}
+                        >
+                            <Text style={modeStyles[this.colorMode].cardText}>
+                                {isIdle ? this.state.question : this.state.curr_question_content}
+                            </Text>
+                        </Card>
+
                         <View style={{ flex: 1 }}></View>
-                        <Messages messages={this.state.messages} />
+                        <Messages messages={this.state.messages} colorMode={this.colorMode} />
 
                         <Button title="Buzz" buttonStyle={{ margin: 20 }} onPress={this.buzzHandler} />
                     </View>

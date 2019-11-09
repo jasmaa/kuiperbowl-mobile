@@ -38,7 +38,6 @@ export default class HomeScreen extends React.PureComponent {
 
                     <Text h1 style={{ textAlign: "center", color: 'white' }}>Welcome to Kuiperbowl</Text>
 
-
                     <View>
                         <Card>
                             <Input

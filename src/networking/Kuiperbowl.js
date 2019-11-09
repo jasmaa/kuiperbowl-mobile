@@ -74,8 +74,10 @@ export default class Kuiperbowl {
      * Clean up
      */
     deinit(){
+        this.leave();
         clearInterval(this.updateTimer);
         clearInterval(this.pingTimer);
+        this.ws.close();
     }
 
     /**
