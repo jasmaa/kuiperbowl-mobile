@@ -23,7 +23,7 @@ export default class RoomScreen extends React.PureComponent {
         });
         this.K.init();
 
-        this.colorMode = 'dark';
+        this.colorMode = 'light';
 
         this.state = {};
     }

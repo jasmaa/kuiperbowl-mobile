@@ -1,6 +1,7 @@
 import React from 'react';
 import { FlatList, Picker, Alert, ScrollView, View } from 'react-native';
 import { Input, Text, ListItem, Button, Card } from 'react-native-elements';
+import ModalSelector from 'react-native-modal-selector';
 
 import { styles, BootstrapColors, modeStyles } from '../styles';
 
@@ -21,8 +22,8 @@ export default class ProfileConfig extends React.PureComponent {
         this.props.K.setName(text);
         this.setState({ handle: text });
     }
-    changeDifficultyHandler = (itemValue, _) => this.props.K.setDifficulty(itemValue);
-    changeCategoryHandler = (itemValue, _) => this.props.K.setCategory(itemValue);
+    changeDifficultyHandler = (option) => this.props.K.setDifficulty(option.label);
+    changeCategoryHandler = (option) => this.props.K.setCategory(option.label);
     resetScoreHandler = () => {
         Alert.alert(
             'Reset Score',
@@ -51,30 +52,34 @@ export default class ProfileConfig extends React.PureComponent {
                     </Card>
 
                     <Card containerStyle={modeStyles[this.props.colorMode].card}>
-                        <Picker
-                            selectedValue={this.props.category}
-                            onValueChange={this.changeCategoryHandler}
-                        >
-                            <Picker.Item label="Everything" value="Everything" />
-                            <Picker.Item label="Science" value="Science" />
-                            <Picker.Item label="History" value="History" />
-                            <Picker.Item label="Literature" value="Literature" />
-                            <Picker.Item label="Philosophy" value="Philosophy" />
-                            <Picker.Item label="Religion" value="Religion" />
-                            <Picker.Item label="Geography" value="Geography" />
-                            <Picker.Item label="Fine Arts" value="Fine Arts" />
-                            <Picker.Item label="Social Studies" value="Social Studies" />
-                            <Picker.Item label="Mythology" value="Mythology" />
-                            <Picker.Item label="Trash" value="Trash" />
-                        </Picker>
-                        <Picker
-                            selectedValue={this.props.difficulty}
-                            onValueChange={this.changeDifficultyHandler}
-                        >
-                            <Picker.Item label="HS" value="HS" />
-                            <Picker.Item label="MS" value="MS" />
-                            <Picker.Item label="College" value="College" />
-                        </Picker>
+                        <ModalSelector
+                            data={[
+                                { key: "Everything", label: "Everything" },
+                                { key: "Science", label: "Science" },
+                                { key: "History", label: "History" },
+                                { key: "Literature", label: "Literature" },
+                                { key: "Philosophy", label: "Philosophy" },
+                                { key: "Religion", label: "Religion" },
+                                { key: "Geography", label: "Geography" },
+                                { key: "Fine Arts", label: "Fine Arts" },
+                                { key: "Social Studies", label: "Social Studies" },
+                                { key: "Mythology", label: "Mythology" },
+                                { key: "Trash", label: "Trash" },
+                            ]}
+                            initValue={this.props.category}
+                            onChange={this.changeCategoryHandler}
+                            style={{margin: 5}}
+                        />
+                        <ModalSelector
+                            data={[
+                                { key: "HS", label: "HS" },
+                                { key: "MS", label: "MS" },
+                                { key: "College", label: "College" },
+                            ]}
+                            initValue={this.props.difficulty}
+                            onChange={this.changeDifficultyHandler}
+                            style={{margin: 5}}
+                        />
                     </Card>
 
                     <Card containerStyle={modeStyles[this.props.colorMode].card}>
@@ -114,7 +119,7 @@ export default class ProfileConfig extends React.PureComponent {
                         />
                     </Card>
                 </View>
-            </ScrollView>
+            </ScrollView >
         );
     }
 }
