@@ -1,5 +1,5 @@
 import React from 'react';
-import { FlatList, Picker, Alert, ScrollView, View } from 'react-native';
+import { FlatList, Switch, Alert, ScrollView, View } from 'react-native';
 import { Input, Text, ListItem, Button, Card } from 'react-native-elements';
 import ModalSelector from 'react-native-modal-selector';
 
@@ -68,7 +68,12 @@ export default class ProfileConfig extends React.PureComponent {
                             ]}
                             initValue={this.props.category}
                             onChange={this.changeCategoryHandler}
-                            style={{margin: 5}}
+                            ref={selector => { this._categorySelector = selector; }}
+                            customSelector={<Button
+                                title={this.props.category}
+                                onPress={() => this._categorySelector.open()}
+                                buttonStyle={{ margin: 10, backgroundColor: BootstrapColors.INFO }}
+                            />}
                         />
                         <ModalSelector
                             data={[
@@ -78,7 +83,12 @@ export default class ProfileConfig extends React.PureComponent {
                             ]}
                             initValue={this.props.difficulty}
                             onChange={this.changeDifficultyHandler}
-                            style={{margin: 5}}
+                            ref={selector => { this._difficultySelector = selector; }}
+                            customSelector={<Button
+                                title={this.props.difficulty}
+                                onPress={() => this._difficultySelector.open()}
+                                buttonStyle={{ margin: 10, backgroundColor: BootstrapColors.INFO }}
+                            />}
                         />
                     </Card>
 
@@ -104,6 +114,19 @@ export default class ProfileConfig extends React.PureComponent {
                                 />
                             }
                         />
+                    </Card>
+
+                    <Card containerStyle={modeStyles[this.props.colorMode].card}>
+                        <View style={{flex: 1, flexDirection: 'row', alignItems: 'center'}}>
+                            <Text style={modeStyles[this.props.colorMode].cardText}>
+                                {this.props.colorMode == 'light' ? "Light Mode" : "Dark Mode"}
+                            </Text>
+                            <View style={{flex: 1}}></View>
+                            <Switch
+                                value={this.props.colorMode != 'light'}
+                                onChange={this.props.colorModeSwitchHandler}
+                            />
+                        </View>
                     </Card>
 
                     <Card containerStyle={modeStyles[this.props.colorMode].card}>

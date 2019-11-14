@@ -5,6 +5,7 @@ import { Button, Text, Card } from 'react-native-elements';
 import ProgressBar from 'react-native-progress/Bar';
 import GestureRecognizer, { swipeDirections } from 'react-native-swipe-gestures';
 import Drawer from 'react-native-drawer';
+import CacheStore from 'react-native-cache-store';
 
 import { Messages, ProfileConfig } from '../components/';
 import Kuiperbowl from '../networking/Kuiperbowl';
@@ -23,9 +24,13 @@ export default class RoomScreen extends React.PureComponent {
         });
         this.K.init();
 
-        this.colorMode = 'light';
-
-        this.state = {};
+        this.state = {colorMode: 'light'};
+        CacheStore.get("colorMode")
+            .then(colorMode => {
+                if(colorMode){
+                    this.setState({colorMode: colorMode});   
+                }
+            });
     }
 
     componentWillUnmount() {
@@ -35,7 +40,7 @@ export default class RoomScreen extends React.PureComponent {
     buzzHandler = () => {
         // Do buzz ownership checking here instead
         if (this.K.buzz()) {
-            this.props.navigation.navigate('Answer', { K: this.K, colorMode: this.colorMode });
+            this.props.navigation.navigate('Answer', { K: this.K, colorMode: this.state.colorMode });
         }
     }
 
@@ -61,6 +66,12 @@ export default class RoomScreen extends React.PureComponent {
         this.props.navigation.goBack();
     }
 
+    colorModeSwitchHandler = () => {
+        const newColorMode = this.state.colorMode == 'light' ? 'dark' : 'light'
+        CacheStore.set("colorMode", newColorMode);
+        this.setState({ colorMode: newColorMode });
+    }
+
     render() {
         const isContest = this.state.game_state == 'contest';
         const isIdle = this.state.game_state == 'idle';
@@ -73,7 +84,7 @@ export default class RoomScreen extends React.PureComponent {
             <GestureRecognizer
                 onSwipe={this.swipeHandler}
                 config={config}
-                style={modeStyles[this.colorMode].body}
+                style={modeStyles[this.state.colorMode].body}
             >
                 <Drawer
                     ref={(ref) => this._drawer = ref}
@@ -96,7 +107,8 @@ export default class RoomScreen extends React.PureComponent {
                             category={this.state.room_category}
                             scores={this.state.scores}
                             leaveRoomHandler={this.leaveRoomHandler}
-                            colorMode={this.colorMode}
+                            colorMode={this.state.colorMode}
+                            colorModeSwitchHandler={this.colorModeSwitchHandler}
                         />
                     }
                 >
@@ -109,16 +121,16 @@ export default class RoomScreen extends React.PureComponent {
 
                         <Card
                             title={isIdle ? this.state.category + "\n" + this.state.answer_heading : this.state.category}
-                            titleStyle={{...modeStyles[this.colorMode].cardText, textAlign: "left"}}
-                            containerStyle={modeStyles[this.colorMode].card}
+                            titleStyle={{...modeStyles[this.state.colorMode].cardText, textAlign: "left"}}
+                            containerStyle={modeStyles[this.state.colorMode].card}
                         >
-                            <Text style={modeStyles[this.colorMode].cardText}>
+                            <Text style={modeStyles[this.state.colorMode].cardText}>
                                 {isIdle ? this.state.question : this.state.curr_question_content}
                             </Text>
                         </Card>
 
                         <View style={{ flex: 1 }}></View>
-                        <Messages messages={this.state.messages} colorMode={this.colorMode} />
+                        <Messages messages={this.state.messages} colorMode={this.state.colorMode} />
 
                         <Button title="Buzz" buttonStyle={{ margin: 20 }} onPress={this.buzzHandler} />
                     </View>
