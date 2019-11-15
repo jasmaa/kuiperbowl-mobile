@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { View, Keyboard } from 'react-native';
+import { View, Keyboard, StatusBar } from 'react-native';
 import { Button, Text, Card } from 'react-native-elements';
 import ProgressBar from 'react-native-progress/Bar';
 import GestureRecognizer, { swipeDirections } from 'react-native-swipe-gestures';
@@ -86,6 +86,7 @@ export default class RoomScreen extends React.PureComponent {
                 config={config}
                 style={modeStyles[this.state.colorMode].body}
             >
+                <StatusBar hidden />
                 <Drawer
                     ref={(ref) => this._drawer = ref}
                     openDrawerOffset={0.2}

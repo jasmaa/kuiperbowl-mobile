@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { View } from 'react-native';
+import { View, StatusBar } from 'react-native';
 import { Text, Card, Input } from 'react-native-elements';
 import ProgressBar from 'react-native-progress/Bar';
 
@@ -60,6 +60,7 @@ export default class AnswerScreen extends React.PureComponent {
 
         return (
             <View style={modeStyles[colorMode].body}>
+                <StatusBar hidden />
                 <View style={styles.container}>
                     <ProgressBar
                         progress={this.state.buzzProgress}

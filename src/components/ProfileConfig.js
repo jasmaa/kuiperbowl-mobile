@@ -35,6 +35,8 @@ export default class ProfileConfig extends React.PureComponent {
         );
     };
 
+    setScrollHeight = (width, height) => this.setState({ scrollHeight: height });
+
     render() {
 
         // Update handle when value received
@@ -43,7 +45,10 @@ export default class ProfileConfig extends React.PureComponent {
         }
 
         return (
-            <ScrollView style={modeStyles[this.props.colorMode].body}>
+            <ScrollView
+                style={{ ...modeStyles[this.props.colorMode].body, height: this.state.scrollHeight }}
+                onContentSizeChange={this.setScrollHeight}
+            >
                 <View style={styles.container}>
                     <Card containerStyle={modeStyles[this.props.colorMode].card}>
                         <Text h4 style={{ ...modeStyles[this.props.colorMode].cardText, textAlign: "center" }}>
@@ -117,11 +122,11 @@ export default class ProfileConfig extends React.PureComponent {
                     </Card>
 
                     <Card containerStyle={modeStyles[this.props.colorMode].card}>
-                        <View style={{flex: 1, flexDirection: 'row', alignItems: 'center'}}>
+                        <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center' }}>
                             <Text style={modeStyles[this.props.colorMode].cardText}>
                                 {this.props.colorMode == 'light' ? "Light Mode" : "Dark Mode"}
                             </Text>
-                            <View style={{flex: 1}}></View>
+                            <View style={{ flex: 1 }}></View>
                             <Switch
                                 value={this.props.colorMode != 'light'}
                                 onChange={this.props.colorModeSwitchHandler}

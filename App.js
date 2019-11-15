@@ -18,7 +18,9 @@ const MainNavigator = createStackNavigator(
   {
     initialRouteName: 'Home',
     headerMode: 'none',
-    gesturesEnabled: false,
+    defaultNavigationOptions: {
+      gesturesEnabled: false,
+    }
   }
 );
 

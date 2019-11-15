@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, ImageBackground } from 'react-native';
+import { View, ImageBackground, StatusBar } from 'react-native';
 import { Button, Text, Input, Card } from 'react-native-elements';
 
 import { styles } from '../styles';
@@ -34,6 +34,7 @@ export default class HomeScreen extends React.PureComponent {
     render() {
         return (
             <ImageBackground source={require("../images/kuiperbowlAppBG.png")} style={{ width: '100%', height: '100%' }}>
+                <StatusBar hidden />
                 <View style={styles.homeContainer}>
 
                     <Text h1 style={{ textAlign: "center", color: 'white' }}>Welcome to Kuiperbowl</Text>
