@@ -11,6 +11,8 @@ import { Messages, ProfileConfig } from '../components/';
 import Kuiperbowl from '../networking/Kuiperbowl';
 import { styles, BootstrapColors, modeStyles } from '../styles';
 
+import { DrawerActions } from 'react-navigation-drawer';
+
 /**
  * Room screen
  */
@@ -24,11 +26,11 @@ export default class RoomScreen extends React.PureComponent {
         });
         this.K.init();
 
-        this.state = {colorMode: 'light'};
+        this.state = { colorMode: 'light' };
         CacheStore.get("colorMode")
             .then(colorMode => {
-                if(colorMode){
-                    this.setState({colorMode: colorMode});   
+                if (colorMode) {
+                    this.setState({ colorMode: colorMode });
                 }
             });
     }
@@ -48,17 +50,17 @@ export default class RoomScreen extends React.PureComponent {
         const { SWIPE_UP, SWIPE_DOWN, SWIPE_LEFT, SWIPE_RIGHT } = swipeDirections;
         switch (gestureName) {
             case SWIPE_UP:
-                if (!this._drawer._open) {
+                //if (!this._drawer._open) {
                     this.K.next();
-                }
-                break;
+                //}
+                //break;
+            
             case SWIPE_RIGHT:
-                this._drawer.open();
+                this.props.navigation.dispatch(DrawerActions.openDrawer());
                 break;
             case SWIPE_LEFT:
-                this._drawer.close();
+                this.props.navigation.dispatch(DrawerActions.closeDrawer());
                 break;
-
         }
     }
 
@@ -73,21 +75,9 @@ export default class RoomScreen extends React.PureComponent {
     }
 
     render() {
-        const isContest = this.state.game_state == 'contest';
-        const isIdle = this.state.game_state == 'idle';
-        const config = {
-            velocityThreshold: 0.3,
-            directionalOffsetThreshold: 80
-        };
 
-        return (
-            <GestureRecognizer
-                onSwipe={this.swipeHandler}
-                config={config}
-                style={modeStyles[this.state.colorMode].body}
-            >
-                <StatusBar hidden />
-                <Drawer
+        /*
+        <Drawer
                     ref={(ref) => this._drawer = ref}
                     openDrawerOffset={0.2}
                     type="overlay"
@@ -113,31 +103,45 @@ export default class RoomScreen extends React.PureComponent {
                         />
                     }
                 >
-                    <View style={styles.container}>
-                        <ProgressBar
-                            progress={isContest ? this.state.buzzProgress : this.state.contentProgress}
-                            width={null} height={10}
-                            color={isContest ? BootstrapColors.DANGER : BootstrapColors.SUCCESS}
-                        />
+        */
 
-                        <Card
-                            title={isIdle ? this.state.category + "\n" + this.state.answer_heading : this.state.category}
-                            titleStyle={{...modeStyles[this.state.colorMode].cardText, textAlign: "left"}}
-                            containerStyle={modeStyles[this.state.colorMode].card}
-                        >
-                            <Text style={modeStyles[this.state.colorMode].cardText}>
-                                {isIdle ? this.state.question : this.state.curr_question_content}
-                            </Text>
-                        </Card>
+        const isContest = this.state.game_state == 'contest';
+        const isIdle = this.state.game_state == 'idle';
+        const config = {
+            velocityThreshold: 0.3,
+            directionalOffsetThreshold: 80
+        };
 
-                        <View style={{ flex: 1 }}></View>
-                        <Messages messages={this.state.messages} colorMode={this.state.colorMode} />
+        return (
+            <GestureRecognizer
+                onSwipe={this.swipeHandler}
+                config={config}
+                style={modeStyles[this.state.colorMode].body}
+            >
+                <StatusBar hidden />
+                <View style={styles.container}>
+                    <ProgressBar
+                        progress={isContest ? this.state.buzzProgress : this.state.contentProgress}
+                        width={null} height={10}
+                        color={isContest ? BootstrapColors.DANGER : BootstrapColors.SUCCESS}
+                    />
 
-                        <Button title="Buzz" buttonStyle={{ margin: 20 }} onPress={this.buzzHandler} />
-                    </View>
+                    <Card
+                        title={isIdle ? this.state.category + "\n" + this.state.answer_heading : this.state.category}
+                        titleStyle={{ ...modeStyles[this.state.colorMode].cardText, textAlign: "left" }}
+                        containerStyle={modeStyles[this.state.colorMode].card}
+                    >
+                        <Text style={modeStyles[this.state.colorMode].cardText}>
+                            {isIdle ? this.state.question : this.state.curr_question_content}
+                        </Text>
+                    </Card>
 
-                </Drawer>
-            </GestureRecognizer >
+                    <View style={{ flex: 1 }}></View>
+                    <Messages messages={this.state.messages} colorMode={this.state.colorMode} />
+
+                    <Button title="Buzz" buttonStyle={{ margin: 20 }} onPress={this.buzzHandler} />
+                </View>
+            </GestureRecognizer>
         );
     }
 }
