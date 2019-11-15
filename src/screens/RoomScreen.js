@@ -1,17 +1,14 @@
 
 import React from 'react';
-import { View, Keyboard, StatusBar } from 'react-native';
+import { View, StatusBar } from 'react-native';
 import { Button, Text, Card } from 'react-native-elements';
 import ProgressBar from 'react-native-progress/Bar';
 import GestureRecognizer, { swipeDirections } from 'react-native-swipe-gestures';
-import Drawer from 'react-native-drawer';
 import CacheStore from 'react-native-cache-store';
 
-import { Messages, ProfileConfig } from '../components/';
+import { Messages } from '../components/';
 import Kuiperbowl from '../networking/Kuiperbowl';
 import { styles, BootstrapColors, modeStyles } from '../styles';
-
-import { DrawerActions } from 'react-navigation-drawer';
 
 /**
  * Room screen
@@ -35,10 +32,6 @@ export default class RoomScreen extends React.PureComponent {
             });
     }
 
-    componentWillUnmount() {
-        this.K.deinit();
-    }
-
     buzzHandler = () => {
         // Do buzz ownership checking here instead
         if (this.K.buzz()) {
@@ -50,22 +43,12 @@ export default class RoomScreen extends React.PureComponent {
         const { SWIPE_UP, SWIPE_DOWN, SWIPE_LEFT, SWIPE_RIGHT } = swipeDirections;
         switch (gestureName) {
             case SWIPE_UP:
-                //if (!this._drawer._open) {
-                    this.K.next();
-                //}
-                //break;
-            
-            case SWIPE_RIGHT:
-                this.props.navigation.dispatch(DrawerActions.openDrawer());
+                this.K.next();
                 break;
-            case SWIPE_LEFT:
-                this.props.navigation.dispatch(DrawerActions.closeDrawer());
+            case SWIPE_RIGHT:
+                this.props.navigation.navigate('Profile', { K: this.K, colorMode: this.state.colorMode });
                 break;
         }
-    }
-
-    leaveRoomHandler = () => {
-        this.props.navigation.goBack();
     }
 
     colorModeSwitchHandler = () => {
