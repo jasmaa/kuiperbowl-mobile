@@ -1,9 +1,9 @@
 import React from 'react';
-import { FlatList, Switch, Alert, ScrollView, View } from 'react-native';
+import { FlatList, Switch, Alert, View } from 'react-native';
 import { Input, Text, ListItem, Button, Card } from 'react-native-elements';
 import ModalSelector from 'react-native-modal-selector';
-import GestureRecognizer, { swipeDirections } from 'react-native-swipe-gestures';
 
+import GestureRecognizerScroll, { swipeDirections } from '../vendor/GestureRecognizerScroll';
 import { styles, BootstrapColors, modeStyles } from '../styles';
 
 /**
@@ -26,7 +26,7 @@ export default class ProfileScreen extends React.PureComponent {
             this.setState(clientState);
         };
 
-        
+
     }
 
     swipeHandler = (gestureName, gestureState) => {
@@ -63,7 +63,7 @@ export default class ProfileScreen extends React.PureComponent {
         const oldHandler = this.props.navigation.getParam("colorModeSwitchHandler");
         oldHandler();
         const newColorMode = this.state.colorMode == 'light' ? 'dark' : 'light'
-        this.setState({colorMode: newColorMode});
+        this.setState({ colorMode: newColorMode });
     }
 
     render() {
@@ -74,115 +74,111 @@ export default class ProfileScreen extends React.PureComponent {
         };
 
         return (
-            <GestureRecognizer
+            <GestureRecognizerScroll
                 onSwipe={this.swipeHandler}
                 config={config}
                 style={modeStyles[this.state.colorMode].body}
             >
-                <ScrollView
-                    style={modeStyles[this.state.colorMode].body}
-                >
-                    <View style={styles.container}>
-                        <Card containerStyle={modeStyles[this.state.colorMode].card}>
-                            <Text h4 style={{ ...modeStyles[this.state.colorMode].cardText, textAlign: "center" }}>
-                                {this.K.roomName}
-                            </Text>
-                        </Card>
+                <View style={styles.container}>
+                    <Card containerStyle={modeStyles[this.state.colorMode].card}>
+                        <Text h4 style={{ ...modeStyles[this.state.colorMode].cardText, textAlign: "center" }}>
+                            {this.K.roomName}
+                        </Text>
+                    </Card>
 
-                        <Card containerStyle={modeStyles[this.state.colorMode].card}>
-                            <ModalSelector
-                                data={[
-                                    { key: "Everything", label: "Everything" },
-                                    { key: "Science", label: "Science" },
-                                    { key: "History", label: "History" },
-                                    { key: "Literature", label: "Literature" },
-                                    { key: "Philosophy", label: "Philosophy" },
-                                    { key: "Religion", label: "Religion" },
-                                    { key: "Geography", label: "Geography" },
-                                    { key: "Fine Arts", label: "Fine Arts" },
-                                    { key: "Social Studies", label: "Social Studies" },
-                                    { key: "Mythology", label: "Mythology" },
-                                    { key: "Trash", label: "Trash" },
-                                ]}
-                                initValue={this.K.clientState.room_category}
-                                onChange={this.changeCategoryHandler}
-                                ref={selector => { this._categorySelector = selector; }}
-                                customSelector={<Button
-                                    title={this.K.clientState.room_category}
-                                    onPress={() => this._categorySelector.open()}
-                                    buttonStyle={{ margin: 10, backgroundColor: BootstrapColors.INFO }}
-                                />}
-                            />
-                            <ModalSelector
-                                data={[
-                                    { key: "HS", label: "HS" },
-                                    { key: "MS", label: "MS" },
-                                    { key: "College", label: "College" },
-                                ]}
-                                initValue={this.K.clientState.difficulty}
-                                onChange={this.changeDifficultyHandler}
-                                ref={selector => { this._difficultySelector = selector; }}
-                                customSelector={<Button
-                                    title={this.K.clientState.difficulty}
-                                    onPress={() => this._difficultySelector.open()}
-                                    buttonStyle={{ margin: 10, backgroundColor: BootstrapColors.INFO }}
-                                />}
-                            />
-                        </Card>
+                    <Card containerStyle={modeStyles[this.state.colorMode].card}>
+                        <ModalSelector
+                            data={[
+                                { key: "Everything", label: "Everything" },
+                                { key: "Science", label: "Science" },
+                                { key: "History", label: "History" },
+                                { key: "Literature", label: "Literature" },
+                                { key: "Philosophy", label: "Philosophy" },
+                                { key: "Religion", label: "Religion" },
+                                { key: "Geography", label: "Geography" },
+                                { key: "Fine Arts", label: "Fine Arts" },
+                                { key: "Social Studies", label: "Social Studies" },
+                                { key: "Mythology", label: "Mythology" },
+                                { key: "Trash", label: "Trash" },
+                            ]}
+                            initValue={this.K.clientState.room_category}
+                            onChange={this.changeCategoryHandler}
+                            ref={selector => { this._categorySelector = selector; }}
+                            customSelector={<Button
+                                title={this.K.clientState.room_category}
+                                onPress={() => this._categorySelector.open()}
+                                buttonStyle={{ margin: 10, backgroundColor: BootstrapColors.INFO }}
+                            />}
+                        />
+                        <ModalSelector
+                            data={[
+                                { key: "HS", label: "HS" },
+                                { key: "MS", label: "MS" },
+                                { key: "College", label: "College" },
+                            ]}
+                            initValue={this.K.clientState.difficulty}
+                            onChange={this.changeDifficultyHandler}
+                            ref={selector => { this._difficultySelector = selector; }}
+                            customSelector={<Button
+                                title={this.K.clientState.difficulty}
+                                onPress={() => this._difficultySelector.open()}
+                                buttonStyle={{ margin: 10, backgroundColor: BootstrapColors.INFO }}
+                            />}
+                        />
+                    </Card>
 
-                        <Card containerStyle={modeStyles[this.state.colorMode].card}>
-                            <Input
-                                label="Handle"
-                                value={this.state.handle}
-                                onChangeText={this.changeNameHandler}
-                                labelStyle={modeStyles[this.state.colorMode].cardText}
-                                inputStyle={modeStyles[this.state.colorMode].cardText}
-                            />
+                    <Card containerStyle={modeStyles[this.state.colorMode].card}>
+                        <Input
+                            label="Handle"
+                            value={this.state.handle}
+                            onChangeText={this.changeNameHandler}
+                            labelStyle={modeStyles[this.state.colorMode].cardText}
+                            inputStyle={modeStyles[this.state.colorMode].cardText}
+                        />
 
-                            <FlatList
-                                data={this.K.clientState.scores}
-                                renderItem={({ item }) =>
-                                    <ListItem
-                                        title={"" + item[0]}
-                                        rightTitle={"" + item[1]}
-                                        containerStyle={modeStyles[this.state.colorMode].card}
-                                        titleStyle={modeStyles[this.state.colorMode].cardText}
-                                        rightTitleStyle={modeStyles[this.state.colorMode].cardText}
-                                        bottomDivider
-                                    />
-                                }
-                                keyExtractor={(_, index) =>index.toString()}
-                            />
-                        </Card>
-
-                        <Card containerStyle={modeStyles[this.state.colorMode].card}>
-                            <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center' }}>
-                                <Text style={modeStyles[this.state.colorMode].cardText}>
-                                    {this.state.colorMode == 'light' ? "Light Mode" : "Dark Mode"}
-                                </Text>
-                                <View style={{ flex: 1 }}></View>
-                                <Switch
-                                    value={this.state.colorMode != 'light'}
-                                    onChange={this.colorModeSwitchHandler}
+                        <FlatList
+                            data={this.K.clientState.scores}
+                            renderItem={({ item }) =>
+                                <ListItem
+                                    title={"" + item[0]}
+                                    rightTitle={"" + item[1]}
+                                    containerStyle={modeStyles[this.state.colorMode].card}
+                                    titleStyle={modeStyles[this.state.colorMode].cardText}
+                                    rightTitleStyle={modeStyles[this.state.colorMode].cardText}
+                                    bottomDivider
                                 />
-                            </View>
-                        </Card>
+                            }
+                            keyExtractor={(_, index) => index.toString()}
+                        />
+                    </Card>
 
-                        <Card containerStyle={modeStyles[this.state.colorMode].card}>
-                            <Button
-                                title="Reset Score"
-                                buttonStyle={{ margin: 10, backgroundColor: BootstrapColors.SECONDARY }}
-                                onPress={this.resetScoreHandler}
+                    <Card containerStyle={modeStyles[this.state.colorMode].card}>
+                        <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center' }}>
+                            <Text style={modeStyles[this.state.colorMode].cardText}>
+                                {this.state.colorMode == 'light' ? "Light Mode" : "Dark Mode"}
+                            </Text>
+                            <View style={{ flex: 1 }}></View>
+                            <Switch
+                                value={this.state.colorMode != 'light'}
+                                onChange={this.colorModeSwitchHandler}
                             />
-                            <Button
-                                title="Leave Room"
-                                buttonStyle={{ margin: 10, backgroundColor: BootstrapColors.DANGER }}
-                                onPress={this.leaveRoomHandler}
-                            />
-                        </Card>
-                    </View>
-                </ScrollView>
-            </GestureRecognizer>
+                        </View>
+                    </Card>
+
+                    <Card containerStyle={modeStyles[this.state.colorMode].card}>
+                        <Button
+                            title="Reset Score"
+                            buttonStyle={{ margin: 10, backgroundColor: BootstrapColors.SECONDARY }}
+                            onPress={this.resetScoreHandler}
+                        />
+                        <Button
+                            title="Leave Room"
+                            buttonStyle={{ margin: 10, backgroundColor: BootstrapColors.DANGER }}
+                            onPress={this.leaveRoomHandler}
+                        />
+                    </Card>
+                </View>
+            </GestureRecognizerScroll>
         );
     }
 }
