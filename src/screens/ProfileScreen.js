@@ -1,9 +1,9 @@
 import React from 'react';
-import { FlatList, Switch, Alert, View } from 'react-native';
+import { FlatList, Switch, Alert, View, BackHandler } from 'react-native';
 import { Input, Text, ListItem, Button, Card } from 'react-native-elements';
 import ModalSelector from 'react-native-modal-selector';
 
-import GestureRecognizerScroll, { swipeDirections } from '../vendor/GestureRecognizerScroll';
+import GestureRecognizerScroll, { swipeDirections } from '../vendor/react-native-swipe-gestures';
 import { styles, BootstrapColors, modeStyles } from '../styles';
 
 /**
@@ -27,6 +27,20 @@ export default class ProfileScreen extends React.PureComponent {
         };
 
 
+    }
+
+    componentDidMount() {
+        BackHandler.addEventListener('hardwareBackPress', this.onBackPress);
+    }
+
+    componentWillUnmount() {
+        BackHandler.removeEventListener('hardwareBackPress', this.onBackPress);
+    }
+
+    onBackPress = () => {
+        this.K.updateCallback = this.oldCallback;
+        this.props.navigation.goBack();
+        return true;
     }
 
     swipeHandler = (gestureName, gestureState) => {
