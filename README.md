@@ -1,11 +1,18 @@
 # Kuiperbowl Mobile
 
-WIP Kuiperbowl mobile client
+Mobile client for Kuiperbowl
 
-![Kuiperbowl mobile](./media/screenshot_01.png)
+<img src="./media/screenshot01.png" width="300">
+<img src="./media/screenshot02.png" width="300">
 
 ## Setup and Run
-  - Setup with: `./scripts/setup.sh`
-  - Run on Android
-    - Start emulator or connect device
-    - `npx react-native run-android`
+
+    npm install
+
+    # Android
+    # Start emulator or connect device
+    npx react-native run-android
+
+    # iOS
+    cd ios && pod install
+    # Build with XCode legacy build system
