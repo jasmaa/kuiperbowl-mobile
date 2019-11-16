@@ -46,7 +46,11 @@ export default class RoomScreen extends React.PureComponent {
                 this.K.next();
                 break;
             case SWIPE_RIGHT:
-                this.props.navigation.navigate('Profile', { K: this.K, colorMode: this.state.colorMode });
+                this.props.navigation.navigate('Profile', {
+                    K: this.K,
+                    colorMode: this.state.colorMode,
+                    colorModeSwitchHandler: this.colorModeSwitchHandler,
+                });
                 break;
         }
     }
@@ -58,35 +62,6 @@ export default class RoomScreen extends React.PureComponent {
     }
 
     render() {
-
-        /*
-        <Drawer
-                    ref={(ref) => this._drawer = ref}
-                    openDrawerOffset={0.2}
-                    type="overlay"
-                    tapToClose={true}
-                    onClose={Keyboard.dismiss}
-                    styles={{
-                        drawer: { flex: 1, backgroundColor: "white" },
-                    }}
-                    tweenHandler={(ratio) => ({
-                        main: { opacity: (2 - ratio) / 2 }
-                    })}
-                    tweenDuration={100}
-                    content={
-                        <ProfileConfig
-                            K={this.K}
-                            handle={this.state.player_name}
-                            difficulty={this.state.difficulty}
-                            category={this.state.room_category}
-                            scores={this.state.scores}
-                            leaveRoomHandler={this.leaveRoomHandler}
-                            colorMode={this.state.colorMode}
-                            colorModeSwitchHandler={this.colorModeSwitchHandler}
-                        />
-                    }
-                >
-        */
 
         const isContest = this.state.game_state == 'contest';
         const isIdle = this.state.game_state == 'idle';
@@ -108,6 +83,8 @@ export default class RoomScreen extends React.PureComponent {
                         width={null} height={10}
                         color={isContest ? BootstrapColors.DANGER : BootstrapColors.SUCCESS}
                     />
+
+                    <Text>{this.state.colorMode}</Text>
 
                     <Card
                         title={isIdle ? this.state.category + "\n" + this.state.answer_heading : this.state.category}

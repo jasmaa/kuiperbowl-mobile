@@ -16,10 +16,17 @@ export default class ProfileScreen extends React.PureComponent {
 
         this.K = this.props.navigation.getParam('K');
 
+        this.state = {
+            handle: this.K.clientState.player_name,
+            colorMode: this.props.navigation.getParam("colorMode"),
+        }
+
         this.oldCallback = this.K.updateCallback;
         this.K.updateCallback = (clientState) => {
             this.setState(clientState);
         };
+
+        
     }
 
     swipeHandler = (gestureName, gestureState) => {
@@ -32,7 +39,10 @@ export default class ProfileScreen extends React.PureComponent {
         }
     }
 
-    changeNameHandler = (text) => this.K.setName(text);
+    changeNameHandler = (text) => {
+        this.setState({ handle: text });
+        this.K.setName(text);
+    }
     changeDifficultyHandler = (option) => this.K.setDifficulty(option.label);
     changeCategoryHandler = (option) => this.K.setCategory(option.label);
     resetScoreHandler = () => {
@@ -49,10 +59,15 @@ export default class ProfileScreen extends React.PureComponent {
         this.K.deinit();
         this.props.navigation.navigate("Home");
     }
+    colorModeSwitchHandler = () => {
+        const oldHandler = this.props.navigation.getParam("colorModeSwitchHandler");
+        oldHandler();
+        const newColorMode = this.state.colorMode == 'light' ? 'dark' : 'light'
+        this.setState({colorMode: newColorMode});
+    }
 
     render() {
 
-        const colorMode = this.props.navigation.getParam("colorMode", "light");
         const config = {
             velocityThreshold: 0.3,
             directionalOffsetThreshold: 80
@@ -62,19 +77,19 @@ export default class ProfileScreen extends React.PureComponent {
             <GestureRecognizer
                 onSwipe={this.swipeHandler}
                 config={config}
-                style={modeStyles[colorMode].body}
+                style={modeStyles[this.state.colorMode].body}
             >
                 <ScrollView
-                    style={modeStyles[colorMode].body}
+                    style={modeStyles[this.state.colorMode].body}
                 >
                     <View style={styles.container}>
-                        <Card containerStyle={modeStyles[colorMode].card}>
-                            <Text h4 style={{ ...modeStyles[colorMode].cardText, textAlign: "center" }}>
+                        <Card containerStyle={modeStyles[this.state.colorMode].card}>
+                            <Text h4 style={{ ...modeStyles[this.state.colorMode].cardText, textAlign: "center" }}>
                                 {this.K.roomName}
                             </Text>
                         </Card>
 
-                        <Card containerStyle={modeStyles[colorMode].card}>
+                        <Card containerStyle={modeStyles[this.state.colorMode].card}>
                             <ModalSelector
                                 data={[
                                     { key: "Everything", label: "Everything" },
@@ -115,13 +130,13 @@ export default class ProfileScreen extends React.PureComponent {
                             />
                         </Card>
 
-                        <Card containerStyle={modeStyles[colorMode].card}>
+                        <Card containerStyle={modeStyles[this.state.colorMode].card}>
                             <Input
                                 label="Handle"
-                                value={this.K.clientState.player_name}
+                                value={this.state.handle}
                                 onChangeText={this.changeNameHandler}
-                                labelStyle={modeStyles[colorMode].cardText}
-                                inputStyle={modeStyles[colorMode].cardText}
+                                labelStyle={modeStyles[this.state.colorMode].cardText}
+                                inputStyle={modeStyles[this.state.colorMode].cardText}
                             />
 
                             <FlatList
@@ -130,29 +145,30 @@ export default class ProfileScreen extends React.PureComponent {
                                     <ListItem
                                         title={"" + item[0]}
                                         rightTitle={"" + item[1]}
-                                        containerStyle={modeStyles[colorMode].card}
-                                        titleStyle={modeStyles[colorMode].cardText}
-                                        rightTitleStyle={modeStyles[colorMode].cardText}
+                                        containerStyle={modeStyles[this.state.colorMode].card}
+                                        titleStyle={modeStyles[this.state.colorMode].cardText}
+                                        rightTitleStyle={modeStyles[this.state.colorMode].cardText}
                                         bottomDivider
                                     />
                                 }
+                                keyExtractor={(_, index) =>index.toString()}
                             />
                         </Card>
 
-                        <Card containerStyle={modeStyles[colorMode].card}>
+                        <Card containerStyle={modeStyles[this.state.colorMode].card}>
                             <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center' }}>
-                                <Text style={modeStyles[colorMode].cardText}>
-                                    {colorMode == 'light' ? "Light Mode" : "Dark Mode"}
+                                <Text style={modeStyles[this.state.colorMode].cardText}>
+                                    {this.state.colorMode == 'light' ? "Light Mode" : "Dark Mode"}
                                 </Text>
                                 <View style={{ flex: 1 }}></View>
                                 <Switch
-                                    value={colorMode != 'light'}
-
+                                    value={this.state.colorMode != 'light'}
+                                    onChange={this.colorModeSwitchHandler}
                                 />
                             </View>
                         </Card>
 
-                        <Card containerStyle={modeStyles[colorMode].card}>
+                        <Card containerStyle={modeStyles[this.state.colorMode].card}>
                             <Button
                                 title="Reset Score"
                                 buttonStyle={{ margin: 10, backgroundColor: BootstrapColors.SECONDARY }}
