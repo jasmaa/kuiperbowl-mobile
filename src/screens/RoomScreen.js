@@ -84,8 +84,6 @@ export default class RoomScreen extends React.PureComponent {
                         color={isContest ? BootstrapColors.DANGER : BootstrapColors.SUCCESS}
                     />
 
-                    <Text>{this.state.colorMode}</Text>
-
                     <Card
                         title={isIdle ? this.state.category + "\n" + this.state.answer_heading : this.state.category}
                         titleStyle={{ ...modeStyles[this.state.colorMode].cardText, textAlign: "left" }}
