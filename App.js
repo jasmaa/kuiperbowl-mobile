@@ -2,9 +2,9 @@
 import React from 'react';
 import { createAppContainer } from 'react-navigation';
 import { createStackNavigator } from 'react-navigation-stack';
-import { fromLeft, fromRight, fromTop, fromBottom, flipY} from 'react-navigation-transitions'
+import { fromLeft, fromRight, fromTop, fromBottom, flipY } from 'react-navigation-transitions'
 
-import { HomeScreen, RoomScreen, AnswerScreen, ProfileScreen } from './src/screens'
+import { HomeScreen, RoomScreen, AnswerScreen, ProfileScreen, SettingsScreen } from './src/screens'
 
 
 const handleCustomTransition = ({ scenes }) => {
@@ -32,6 +32,17 @@ const handleCustomTransition = ({ scenes }) => {
     && nextScene.route.routeName === 'Room') {
     return fromRight();
   }
+  else if (prevScene
+    && prevScene.route.routeName === 'Home'
+    && nextScene.route.routeName === 'Settings') {
+    return fromRight();
+  }
+  else if (prevScene
+    && prevScene.route.routeName === 'Settings'
+    && nextScene.route.routeName === 'Home') {
+    return fromLeft();
+  }
+
   return fromBottom();
 }
 
@@ -41,6 +52,7 @@ const MainNavigator = createStackNavigator(
     Room: { screen: RoomScreen },
     Profile: { screen: ProfileScreen },
     Answer: { screen: AnswerScreen },
+    Settings: { screen: SettingsScreen },
   },
   {
     initialRouteName: 'Home',

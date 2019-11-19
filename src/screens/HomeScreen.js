@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, ImageBackground, StatusBar } from 'react-native';
 import { Button, Text, Input, Card, Icon } from 'react-native-elements';
+import CacheStore from 'react-native-cache-store';
 
 import { styles, BootstrapColors } from '../styles';
 import { version } from '../../package.json';
@@ -17,7 +18,14 @@ export default class HomeScreen extends React.PureComponent {
         this.state = {
             roomName: "",
             inputError: "",
+            colorMode: "light",
         };
+        CacheStore.get("colorMode")
+            .then(colorMode => {
+                if (colorMode) {
+                    this.setState({ colorMode: colorMode });
+                }
+            });
     }
 
     changeTextHandler = (value) => this.setState({ roomName: value });
@@ -25,12 +33,26 @@ export default class HomeScreen extends React.PureComponent {
         const namePattern = /^[a-z0-9_-]+$/
         if (this.state.roomName.search(namePattern) == 0) {
             this.setState({ inputError: "" });
-            this.props.navigation.navigate('Room', { roomName: this.state.roomName });
+            this.props.navigation.navigate('Room', {
+                colorMode: this.state.colorMode,
+                roomName: this.state.roomName,
+            });
         }
         else {
             this._roomInput.shake();
             this.setState({ inputError: "Invalid room name" });
         }
+    }
+    goToSettingsHandler = () => {
+        this.props.navigation.navigate('Settings', {
+            colorMode: this.state.colorMode,
+            colorModeSwitchHandler: this.colorModeSwitchHandler,
+        });
+    }
+    colorModeSwitchHandler = () => {
+        const newColorMode = this.state.colorMode == 'light' ? 'dark' : 'light';
+        CacheStore.set("colorMode", newColorMode);
+        this.setState({colorMode: newColorMode})
     }
 
     render() {
@@ -68,6 +90,7 @@ export default class HomeScreen extends React.PureComponent {
                                     type="simple-line-icon"
                                 />
                             }
+                            onPress={this.goToSettingsHandler}
                         />
                     </View>
                 </View>

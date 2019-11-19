@@ -5,7 +5,6 @@ import ModalSelector from 'react-native-modal-selector';
 
 import GestureRecognizerScroll, { swipeDirections } from '../vendor/react-native-swipe-gestures';
 import { styles, BootstrapColors, modeStyles } from '../styles';
-import { PureListItem } from '../components';
 
 /**
  * Room screen
@@ -26,8 +25,6 @@ export default class ProfileScreen extends React.PureComponent {
         this.K.updateCallback = (clientState) => {
             this.setState(clientState);
         };
-
-
     }
 
     componentDidMount() {
@@ -73,12 +70,6 @@ export default class ProfileScreen extends React.PureComponent {
     leaveRoomHandler = () => {
         this.K.deinit();
         this.props.navigation.navigate("Home");
-    }
-    colorModeSwitchHandler = () => {
-        const oldHandler = this.props.navigation.getParam("colorModeSwitchHandler");
-        oldHandler();
-        const newColorMode = this.state.colorMode == 'light' ? 'dark' : 'light'
-        this.setState({ colorMode: newColorMode });
     }
 
     render() {
@@ -165,19 +156,6 @@ export default class ProfileScreen extends React.PureComponent {
                             }
                             keyExtractor={(_, index) => index.toString()}
                         />
-                    </Card>
-
-                    <Card containerStyle={modeStyles[this.state.colorMode].card}>
-                        <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center' }}>
-                            <Text style={modeStyles[this.state.colorMode].cardText}>
-                                {this.state.colorMode == 'light' ? "Light Mode" : "Dark Mode"}
-                            </Text>
-                            <View style={{ flex: 1 }}></View>
-                            <Switch
-                                value={this.state.colorMode != 'light'}
-                                onChange={this.colorModeSwitchHandler}
-                            />
-                        </View>
                     </Card>
 
                     <Card containerStyle={modeStyles[this.state.colorMode].card}>

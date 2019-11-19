@@ -4,7 +4,6 @@ import { View, StatusBar } from 'react-native';
 import { Button, Text, Card } from 'react-native-elements';
 import ProgressBar from 'react-native-progress/Bar';
 import GestureRecognizer, { swipeDirections } from 'react-native-swipe-gestures';
-import CacheStore from 'react-native-cache-store';
 
 import { Messages } from '../components/';
 import Kuiperbowl from '../networking/Kuiperbowl';
@@ -23,13 +22,9 @@ export default class RoomScreen extends React.PureComponent {
         });
         this.K.init();
 
-        this.state = { colorMode: 'light' };
-        CacheStore.get("colorMode")
-            .then(colorMode => {
-                if (colorMode) {
-                    this.setState({ colorMode: colorMode });
-                }
-            });
+        this.state = {
+            colorMode: this.props.navigation.getParam("colorMode")
+        }
     }
 
     buzzHandler = () => {
@@ -49,16 +44,9 @@ export default class RoomScreen extends React.PureComponent {
                 this.props.navigation.navigate('Profile', {
                     K: this.K,
                     colorMode: this.state.colorMode,
-                    colorModeSwitchHandler: this.colorModeSwitchHandler,
                 });
                 break;
         }
-    }
-
-    colorModeSwitchHandler = () => {
-        const newColorMode = this.state.colorMode == 'light' ? 'dark' : 'light'
-        CacheStore.set("colorMode", newColorMode);
-        this.setState({ colorMode: newColorMode });
     }
 
     render() {
