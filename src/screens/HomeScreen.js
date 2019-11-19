@@ -1,8 +1,10 @@
 import React from 'react';
 import { View, ImageBackground, StatusBar } from 'react-native';
-import { Button, Text, Input, Card } from 'react-native-elements';
+import { Button, Text, Input, Card, Icon } from 'react-native-elements';
 
-import { styles } from '../styles';
+import { styles, BootstrapColors } from '../styles';
+import { version } from '../../package.json';
+
 
 /**
  * Room screen
@@ -32,24 +34,41 @@ export default class HomeScreen extends React.PureComponent {
     }
 
     render() {
+
         return (
             <ImageBackground source={require("../images/kuiperbowlAppBG.png")} style={{ width: '100%', height: '100%' }}>
                 <StatusBar hidden />
-                <View style={styles.homeContainer}>
-
-                    <Text h1 style={{ textAlign: "center", color: 'white' }}>Welcome to Kuiperbowl</Text>
-
-                    <View>
-                        <Card>
-                            <Input
-                                label="Room"
-                                ref={component => this._roomInput = component}
-                                value={this.state.roomName}
-                                onChangeText={this.changeTextHandler}
-                                errorMessage={this.state.inputError}
-                            />
-                        </Card>
-                        <Button title="Go!" buttonStyle={{ margin: 10 }} onPress={this.joinRoomHandler} />
+                <View style={styles.container}>
+                    <View style={styles.homeContainer}>
+                        <Text h1 style={{ textAlign: "center", color: 'white' }}>Welcome to Kuiperbowl</Text>
+                        <View>
+                            <Card>
+                                <Input
+                                    label="Room"
+                                    ref={component => this._roomInput = component}
+                                    value={this.state.roomName}
+                                    onChangeText={this.changeTextHandler}
+                                    errorMessage={this.state.inputError}
+                                />
+                            </Card>
+                            <Button title="Go!" buttonStyle={{ margin: 10 }} onPress={this.joinRoomHandler} />
+                        </View>
+                    </View>
+                    <View style={{ flex: 1 }}></View>
+                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                        <Text style={{ textAlign: 'left', color: 'gray' }}>v{version}</Text>
+                        <View style={{ flex: 1 }}></View>
+                        <Button
+                            buttonStyle={{ backgroundColor: BootstrapColors.SECONDARY }}
+                            icon={
+                                <Icon
+                                    name="settings"
+                                    size={20}
+                                    color="white"
+                                    type="simple-line-icon"
+                                />
+                            }
+                        />
                     </View>
                 </View>
             </ImageBackground>

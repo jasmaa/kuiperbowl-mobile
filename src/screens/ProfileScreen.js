@@ -5,6 +5,7 @@ import ModalSelector from 'react-native-modal-selector';
 
 import GestureRecognizerScroll, { swipeDirections } from '../vendor/react-native-swipe-gestures';
 import { styles, BootstrapColors, modeStyles } from '../styles';
+import { PureListItem } from '../components';
 
 /**
  * Room screen

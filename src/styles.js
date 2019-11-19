@@ -33,9 +33,8 @@ export const styles = StyleSheet.create({
         margin: "2%"
     },
     homeContainer: {
-        flex: 1,
+        flex: 8,
         flexDirection: "column",
-        margin: 10,
         justifyContent: "space-evenly",
     }
 });
