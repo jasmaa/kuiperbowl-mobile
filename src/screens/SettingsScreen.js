@@ -1,7 +1,8 @@
 import React from 'react';
-import { Switch, View } from 'react-native';
-import { Text, Button, Card } from 'react-native-elements';
+import { Switch, View, Alert } from 'react-native';
+import { Text, Button, Card, Icon } from 'react-native-elements';
 import GestureRecognizer, { swipeDirections } from 'react-native-swipe-gestures';
+import CacheStore from 'react-native-cache-store';
 
 import { styles, BootstrapColors, modeStyles } from '../styles';
 
@@ -22,15 +23,25 @@ export default class SettingsScreen extends React.PureComponent {
         const newColorMode = this.state.colorMode == 'light' ? 'dark' : 'light';
         this.setState({ colorMode: newColorMode });
     }
-    cacheResetHandler = () => {
-        // put cache reset here
-    }
+    resetCacheHandler = () => {
+        Alert.alert(
+            'Reset Cache',
+            'Are you sure you want to reset?',
+            [
+                { text: 'No' },
+                { text: 'Yes', onPress: () => CacheStore.flush() },
+            ],
+        );
+    };
     swipeHandler = (gestureName, gestureState) => {
         const { SWIPE_UP, SWIPE_DOWN, SWIPE_LEFT, SWIPE_RIGHT } = swipeDirections;
         switch (gestureName) {
             case SWIPE_RIGHT:
                 this.props.navigation.goBack();
         }
+    }
+    backHandler = () => {
+        this.props.navigation.goBack();
     }
 
     render() {
@@ -70,9 +81,26 @@ export default class SettingsScreen extends React.PureComponent {
                         <Button
                             title="Reset Cache"
                             buttonStyle={{ margin: 10, backgroundColor: BootstrapColors.DANGER }}
-                            onPress={this.cacheResetHandler}
+                            onPress={this.resetCacheHandler}
                         />
                     </Card>
+
+                    <View style={{ flex: 1 }}></View>
+
+                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                        <Button
+                            buttonStyle={{ backgroundColor: BootstrapColors.SECONDARY }}
+                            icon={
+                                <Icon
+                                    name="arrow-forward"
+                                    size={20}
+                                    color="white"
+                                    type="material"
+                                />
+                            }
+                            onPress={this.backHandler}
+                        />
+                    </View>
                 </View>
             </GestureRecognizer>
         );

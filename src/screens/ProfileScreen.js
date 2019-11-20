@@ -1,5 +1,5 @@
 import React from 'react';
-import { FlatList, Switch, Alert, View, BackHandler } from 'react-native';
+import { FlatList, Alert, View, BackHandler } from 'react-native';
 import { Input, Text, ListItem, Button, Card } from 'react-native-elements';
 import ModalSelector from 'react-native-modal-selector';
 
