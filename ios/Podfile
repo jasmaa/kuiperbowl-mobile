@@ -35,6 +35,8 @@ target 'kuiperbowl_mobile' do
 
   pod 'RNGestureHandler', :path => '../node_modules/react-native-gesture-handler'
 
+  pod 'react-native-version-number', :path => '../node_modules/react-native-version-number'
+
   target 'kuiperbowl_mobileTests' do
     inherit! :search_paths
     # Pods for testing

@@ -2,10 +2,9 @@ import React from 'react';
 import { View, ImageBackground, StatusBar } from 'react-native';
 import { Button, Text, Input, Card, Icon } from 'react-native-elements';
 import CacheStore from 'react-native-cache-store';
+import VersionNumber from 'react-native-version-number';
 
 import { styles, BootstrapColors } from '../styles';
-import { version } from '../../package.json';
-
 
 /**
  * Room screen
@@ -52,7 +51,7 @@ export default class HomeScreen extends React.PureComponent {
     colorModeSwitchHandler = () => {
         const newColorMode = this.state.colorMode == 'light' ? 'dark' : 'light';
         CacheStore.set("colorMode", newColorMode);
-        this.setState({colorMode: newColorMode})
+        this.setState({ colorMode: newColorMode })
     }
 
     render() {
@@ -78,7 +77,7 @@ export default class HomeScreen extends React.PureComponent {
                     </View>
                     <View style={{ flex: 1 }}></View>
                     <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                        <Text style={{ textAlign: 'left', color: 'gray' }}>v{version}</Text>
+                        <Text style={{ textAlign: 'left', color: 'gray' }}>v{VersionNumber.appVersion}</Text>
                         <View style={{ flex: 1 }}></View>
                         <Button
                             buttonStyle={{ backgroundColor: BootstrapColors.SECONDARY }}
