@@ -2,7 +2,7 @@
 
 Mobile client for Kuiperbowl
 
-<img src="./media/screenshot01.png" width="300"> <img src="./media/screenshot02.png" width="300">
+<img src="./media/screenshots/android_01.png" width="300"> <img src="./media/screenshots/android_02.png" width="300">
 
 ## Setup and Run
 
